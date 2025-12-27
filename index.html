@@ -12,6 +12,7 @@
       --panel-bg: #ffffff;
       --text: #0f172a;
       --muted: #64748b;
+      --accent: #10b981;
     }
 
     html,body{margin:0;padding:0;font-family:Arial, Helvetica, sans-serif;background:var(--bg);color:var(--text);}
@@ -42,7 +43,6 @@
     .tabs [role="tab"]:hover{ background:rgba(255,255,255,0.06); transform:translateY(-1px); }
     .tabs [role="tab"]:focus{ outline:3px solid rgba(255,255,255,0.18); outline-offset:2px; }
 
-    /* estado activo */
     .tabs [role="tab"][aria-selected="true"]{
       background:var(--blue-600);
       box-shadow: 0 2px 0 rgba(0,0,0,0.08) inset;
@@ -58,123 +58,55 @@
       border-radius:10px;
       box-shadow: 0 8px 20px rgba(15,23,42,0.06);
     }
-
     .tab.activa { display:block; }
-
-    /* Tipografía y layout */
     h2{ margin-top:0; color:#0b1220; }
     p{ line-height:1.5; color:#334155; }
 
     /* ===== Glosario / Asistente ===== */
-    .glosario-form {
-      display:flex;
-      gap:8px;
-      margin-bottom:12px;
-      flex-wrap:wrap;
-    }
-    .glosario-form input[type="search"]{
-      flex:1 1 320px;
-      padding:10px 12px;
-      border-radius:8px;
-      border:1px solid #cbd5e1;
-      font-size:15px;
-      background:#fff;
-    }
-    .glosario-form button {
-      padding:10px 14px;
-      border-radius:8px;
-      border:0;
-      background:var(--blue-600);
-      color:#fff;
-      cursor:pointer;
-      font-weight:600;
-    }
-    .sugerencias {
-      margin-bottom:10px;
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-    .sugerencia {
-      background:#eef2ff;
-      color:#1e3a8a;
-      padding:6px 10px;
-      border-radius:999px;
-      cursor:pointer;
-      font-size:14px;
-      border:1px solid rgba(30,58,138,0.06);
-    }
-    .resultado {
-      background:#fff;
-      border:1px solid #e2e8f0;
-      padding:14px;
-      border-radius:8px;
-    }
-    .nota {
-      margin-top:8px;
-      font-size:13px;
-      color:var(--muted);
-    }
-
-    /* imagen resumen */
+    .glosario-form { display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+    .glosario-form input[type="search"]{ flex:1 1 320px; padding:10px 12px; border-radius:8px; border:1px solid #cbd5e1; font-size:15px; background:#fff; }
+    .glosario-form button { padding:10px 14px; border-radius:8px; border:0; background:var(--blue-600); color:#fff; cursor:pointer; font-weight:600; }
+    .sugerencias { margin-bottom:10px; display:flex; gap:8px; flex-wrap:wrap; }
+    .sugerencia { background:#eef2ff; color:#1e3a8a; padding:6px 10px; border-radius:999px; cursor:pointer; font-size:14px; border:1px solid rgba(30,58,138,0.06); }
+    .resultado { background:#fff; border:1px solid #e2e8f0; padding:14px; border-radius:8px; }
+    .nota { margin-top:8px; font-size:13px; color:var(--muted); }
     .resultado img { max-width:180px; float:right; margin-left:12px; border-radius:6px; }
 
-    /* ===== MALLA (tabla de materias por año) ===== */
-    .malla-controls {
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      margin-bottom:12px;
-      align-items:center;
-    }
-    .malla-controls input, .malla-controls select {
-      padding:8px 10px;
-      border-radius:6px;
-      border:1px solid #cbd5e1;
-      font-size:14px;
-      background:#fff;
-    }
-    .malla-controls button {
-      padding:9px 12px;
-      border-radius:6px;
-      border:0;
-      background:var(--blue-600);
-      color:#fff;
-      cursor:pointer;
-      font-weight:600;
-    }
-    .malla-years {
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-top:12px;
-    }
-    .year-box {
-      flex:1 1 240px;
-      background:#f8fafc;
-      border:1px solid #e6eefc;
-      padding:12px;
-      border-radius:8px;
-    }
-    .materia {
-      display:flex;
-      gap:8px;
-      align-items:center;
-      margin-bottom:8px;
-    }
+    /* ===== MALLA (tabla de materias por año y CBC) ===== */
+    .malla-controls { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; align-items:center; }
+    .malla-controls input, .malla-controls select { padding:8px 10px; border-radius:6px; border:1px solid #cbd5e1; font-size:14px; background:#fff; }
+    .malla-controls button { padding:9px 12px; border-radius:6px; border:0; background:var(--blue-600); color:#fff; cursor:pointer; font-weight:600; }
+    .malla-years { display:flex; gap:12px; flex-wrap:wrap; margin-top:12px; }
+    .year-box { flex:1 1 240px; background:#f8fafc; border:1px solid #e6eefc; padding:12px; border-radius:8px; }
+    .materia { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
     .materia .name { flex:1; font-weight:600; color:#0f172a; }
     .materia input[type="number"]{ width:84px; padding:6px; border-radius:6px; border:1px solid #e2e8f0; }
     .materia .avg { min-width:56px; text-align:center; font-weight:700; color:#0b1220; }
-    .materia button.small {
-      padding:6px 8px; border-radius:6px; border:0; cursor:pointer; background:#ef4444; color:#fff; font-size:13px;
+    .materia button.small { padding:6px 8px; border-radius:6px; border:0; cursor:pointer; background:#ef4444; color:#fff; font-size:13px; }
+
+    /* ===== CALENDARIO mensual ===== */
+    .cal-header { display:flex; gap:8px; align-items:center; margin-bottom:12px; }
+    .cal-header .month-title { flex:1; text-align:center; font-size:18px; font-weight:700; }
+    .cal-nav button { padding:8px 10px; border-radius:6px; border:0; background:var(--blue-600); color:#fff; cursor:pointer; }
+    .calendar-grid { display:grid; grid-template-columns: repeat(7, 1fr); gap:6px; }
+    .cal-day { background:#fff; border-radius:8px; min-height:84px; padding:8px; border:1px solid #e6eefc; position:relative; }
+    .cal-day .date-num { font-weight:700; color:#0b1220; }
+    .cal-day .events-dot { position:absolute; bottom:6px; left:8px; display:flex; gap:6px; flex-wrap:wrap; }
+    .event-dot { width:10px; height:10px; border-radius:50%; background:var(--accent); border:2px solid #fff; box-shadow:0 1px 0 rgba(0,0,0,0.06); }
+    .cal-weekdays { display:grid; grid-template-columns: repeat(7, 1fr); gap:6px; margin-bottom:6px; }
+    .weekday { text-align:center; font-weight:700; color:var(--muted); }
+
+    .day-panel { position:fixed; right:18px; top:80px; width:360px; max-width:calc(100% - 32px); background:#fff; border:1px solid #e2e8f0; border-radius:10px; padding:12px; box-shadow:0 24px 48px rgba(2,6,23,0.12); z-index:1200; }
+    .day-panel h4 { margin:0 0 8px 0; }
+    .day-panel .events-list { max-height:240px; overflow:auto; margin-bottom:8px; display:flex; flex-direction:column; gap:8px; }
+    .day-panel .ev { border:1px solid #f0f6ff; padding:8px; border-radius:8px; background:#f8fafc; }
+
+    .btn-ghost { background:transparent; border:1px solid #cbd5e1; padding:8px 10px; border-radius:6px; cursor:pointer; }
+
+    @media (max-width:720px){
+      .day-panel { left:8px; right:8px; top:auto; bottom:12px; width:auto; max-width:none; }
     }
 
-    /* ===== CALENDARIO simple ===== */
-    .cal-form { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:12px; }
-    .cal-form input, .cal-form textarea { padding:8px; border-radius:6px; border:1px solid #cbd5e1; background:#fff; }
-    .cal-list { margin-top:10px; display:flex; flex-direction:column; gap:8px; }
-
-    /* Responsive */
     @media (max-width:680px){
       .malla-years { flex-direction:column; }
       .tabs [role="tab"]{ font-size:14px; padding:10px; }
@@ -200,6 +132,7 @@
       <div class="malla-controls" aria-label="Controles malla">
         <input id="materiaNombre" placeholder="Nombre de la materia (ej. Anatomía)" aria-label="Nombre de la materia">
         <select id="materiaYear" aria-label="Año de la materia">
+          <option value="CBC">CBC</option>
           <option value="1">Año 1</option>
           <option value="2">Año 2</option>
           <option value="3">Año 3</option>
@@ -214,11 +147,8 @@
         <input id="fileImport" type="file" accept="application/json" style="display:none;">
       </div>
 
-      <div class="malla-years" id="mallaYears" aria-live="polite">
-        <!-- Contenido dinámico: cajas por año -->
-      </div>
-
-      <p class="nota">Haz clic en una caja de año para ver / editar las materias. Las notas se guardan en tu navegador (localStorage).</p>
+      <div class="malla-years" id="mallaYears" aria-live="polite"></div>
+      <p class="nota">Haz clic en los inputs de parcial para poner las notas. Los promedios se calculan automáticamente y todo se guarda en tu navegador.</p>
     </section>
 
     <!-- ---------- GLOSARIO / ASISTENTE (WIKIPEDIA) ---------- -->
@@ -236,39 +166,69 @@
         <p class="nota">Escribe un término y pulsa "Buscar". El asistente mostrará el resumen de la página de Wikipedia (si existe).</p>
       </div>
 
-      <p class="nota">Nota: este asistente usa Wikipedia en español (API pública). Si quieres respuestas más conversacionales (GPT), te explico las opciones.</p>
+      <p class="nota">Nota: este asistente usa Wikipedia en español (API pública).</p>
     </section>
 
-    <!-- ---------- CALENDARIO ---------- -->
+    <!-- ---------- CALENDARIO mensual ---------- -->
     <section id="calendario" class="tab" role="tabpanel" aria-labelledby="tab-calendario" tabindex="0">
       <h2>Calendario</h2>
 
-      <div class="cal-form">
-        <input id="evFecha" type="date" aria-label="Fecha del evento">
-        <input id="evTitulo" placeholder="Titulo del evento (ej. Parcial Anatomía)" aria-label="Titulo del evento">
-        <button id="btnAddEvent">Agregar evento</button>
-        <button id="btnClearEvents" style="background:#ef4444;">Borrar todos</button>
+      <div class="cal-header" aria-hidden="false">
+        <div class="cal-nav">
+          <button id="prevMonth" aria-label="Mes anterior">&larr;</button>
+          <button id="todayBtn" class="btn-ghost" aria-label="Hoy">Hoy</button>
+          <button id="nextMonth" aria-label="Mes siguiente">&rarr;</button>
+        </div>
+        <div class="month-title" id="monthTitle" aria-live="polite">Mes Año</div>
+        <div style="width:120px; text-align:right;">
+          <button id="btnExportEvents" style="background:var(--accent); color:#fff; border:0; padding:8px 10px; border-radius:6px;">Exportar</button>
+        </div>
       </div>
 
-      <div id="eventList" class="cal-list"></div>
+      <div class="cal-weekdays" aria-hidden="true">
+        <div class="weekday">Lun</div><div class="weekday">Mar</div><div class="weekday">Mié</div><div class="weekday">Jue</div><div class="weekday">Vie</div><div class="weekday">Sáb</div><div class="weekday">Dom</div>
+      </div>
 
-      <p class="nota">Eventos guardados en tu navegador (localStorage).</p>
+      <div id="calendarGrid" class="calendar-grid" role="grid" aria-label="Calendario mensual"></div>
+
+      <p class="nota">Haz clic en un día para ver los eventos y añadir uno. El evento incluye materia y notas de estudio. Todo se guarda en tu navegador.</p>
+
+      <!-- day panel (dinámico) -->
+      <div id="dayPanel" class="day-panel" style="display:none;" role="dialog" aria-modal="true" aria-label="Detalles del día">
+        <button id="closeDayPanel" style="float:right;" class="btn-ghost">Cerrar</button>
+        <h4 id="dayPanelTitle">DD/MM/YYYY</h4>
+
+        <div class="events-list" id="dayEvents"></div>
+
+        <hr>
+        <form id="addEventForm">
+          <label for="evSubject">Materia / Asunto</label><br>
+          <select id="evSubject" required style="width:100%;padding:8px;border-radius:6px;border:1px solid #cbd5e1;margin:8px 0;background:#fff;">
+            <option value="">-- selecciona o escribe --</option>
+          </select>
+          <input id="evSubjectFree" placeholder="O escribe una materia..." style="width:100%;padding:8px;border-radius:6px;border:1px solid #cbd5e1;margin:6px 0;background:#fff;">
+          <label for="evNote">Notas de estudio</label>
+          <textarea id="evNote" rows="3" style="width:100%;padding:8px;border-radius:6px;border:1px solid #cbd5e1;margin:8px 0;"></textarea>
+          <div style="display:flex;gap:8px;justify-content:flex-end;">
+            <button type="button" id="addEventBtn" style="background:var(--blue-600);color:#fff;border:0;padding:8px 10px;border-radius:6px;">Agregar</button>
+            <button type="button" id="delAllDayEvents" style="background:#ef4444;color:#fff;border:0;padding:8px 10px;border-radius:6px;">Borrar todos</button>
+          </div>
+        </form>
+      </div>
     </section>
   </main>
 
   <script>
   (function(){
-    /* ===== PESTAÑAS (igual que antes) ===== */
+    /* UID helper (usar antes de crear materia por defecto) */
+    function uid(){ return 'm' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+    /* ========== TABS ========== */
     const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
     const panels = Array.from(document.querySelectorAll('[role="tabpanel"]'));
-
     function mostrarTab(id, updateHash = true){
       panels.forEach(p => p.classList.remove('activa'));
-      tabs.forEach(t => {
-        t.setAttribute('aria-selected','false');
-        t.setAttribute('tabindex','-1');
-      });
-
+      tabs.forEach(t => { t.setAttribute('aria-selected','false'); t.setAttribute('tabindex','-1'); });
       const panel = document.getElementById(id);
       const tab = tabs.find(t => t.getAttribute('aria-controls') === id);
       if(panel && tab){
@@ -276,12 +236,9 @@
         tab.setAttribute('aria-selected','true');
         tab.setAttribute('tabindex','0');
         tab.focus({preventScroll:true});
-        if(updateHash){
-          history.replaceState(null, '', '#' + id);
-        }
+        if(updateHash) history.replaceState(null, '', '#' + id);
       }
     }
-
     tabs.forEach(t => {
       t.addEventListener('click', () => mostrarTab(t.getAttribute('aria-controls')));
       t.addEventListener('keydown', (e) => {
@@ -291,31 +248,14 @@
         else if(e.key === 'ArrowLeft') newIdx = (idx - 1 + tabs.length) % tabs.length;
         else if(e.key === 'Home') newIdx = 0;
         else if(e.key === 'End') newIdx = tabs.length - 1;
-
-        if(newIdx !== null){
-          e.preventDefault();
-          tabs[newIdx].focus();
-        }
+        if(newIdx !== null){ e.preventDefault(); tabs[newIdx].focus(); }
       });
-      t.addEventListener('keyup', (e) => {
-        if(e.key === 'Enter' || e.key === ' '){
-          mostrarTab(t.getAttribute('aria-controls'));
-        }
-      });
+      t.addEventListener('keyup', (e) => { if(e.key === 'Enter' || e.key === ' ') mostrarTab(t.getAttribute('aria-controls')); });
     });
+    function initFromHash(){ const hash = location.hash.replace('#',''); const valid = panels.some(p => p.id === hash); if(valid) mostrarTab(hash, false); else mostrarTab('malla', false); }
+    window.addEventListener('hashchange', () => { const id = location.hash.replace('#',''); if(id) mostrarTab(id, false); });
 
-    function initFromHash(){
-      const hash = location.hash.replace('#','');
-      const valid = panels.some(p => p.id === hash);
-      if(valid) mostrarTab(hash, false);
-      else mostrarTab('malla', false);
-    }
-    window.addEventListener('hashchange', () => {
-      const id = location.hash.replace('#','');
-      if(id) mostrarTab(id, false);
-    });
-
-    /* ===== ASISTENTE WIKIPEDIA (igual que antes) ===== */
+    /* ========== WIKIPEDIA ASSISTANT ========== */
     const input = document.getElementById('buscarTermino');
     const btn = document.getElementById('btnBuscar');
     const sugerenciasEl = document.getElementById('sugerencias');
@@ -332,15 +272,11 @@
         const titulos = data[1] || [];
         titulos.forEach(t => {
           const b = document.createElement('button');
-          b.type = 'button';
-          b.className = 'sugerencia';
-          b.textContent = t;
+          b.type = 'button'; b.className = 'sugerencia'; b.textContent = t;
           b.addEventListener('click', () => getResumen(t));
           sugerenciasEl.appendChild(b);
         });
-      }catch(err){
-        console.warn('Sugerencias error:', err);
-      }
+      }catch(err){ console.warn('Sugerencias error:', err); }
     }
 
     async function getResumen(title){
@@ -348,74 +284,37 @@
       try{
         const url = 'https://es.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(title);
         const res = await fetch(url);
-        if(res.status === 404){
-          resultadoEl.innerHTML = '<p class="nota">No se encontró el término en Wikipedia.</p>';
-          return;
-        }
+        if(res.status === 404){ resultadoEl.innerHTML = '<p class="nota">No se encontró el término en Wikipedia.</p>'; return; }
         if(!res.ok) throw new Error('Error al obtener resumen');
         const data = await res.json();
         const html = [];
         html.push('<h3>' + escapeHtml(data.title || title) + '</h3>');
-        if(data.thumbnail && data.thumbnail.source){
-          html.push('<img src="' + escapeHtml(data.thumbnail.source) + '" alt="' + escapeHtml(data.title || '') + '">');
-        }
-        if(data.extract_html){
-          html.push('<div>' + data.extract_html + '</div>');
-        } else if(data.extract){
-          html.push('<p>' + escapeHtml(data.extract) + '</p>');
-        } else {
-          html.push('<p class="nota">No hay resumen disponible.</p>');
-        }
-        if(data.content_urls && data.content_urls.desktop && data.content_urls.desktop.page){
-          html.push('<p class="nota"><a href="' + escapeHtml(data.content_urls.desktop.page) + '" target="_blank" rel="noopener">Leer en Wikipedia</a></p>');
-        }
+        if(data.thumbnail && data.thumbnail.source) html.push('<img src="' + escapeHtml(data.thumbnail.source) + '" alt="' + escapeHtml(data.title || '') + '">');
+        if(data.extract_html) html.push('<div>' + data.extract_html + '</div>');
+        else if(data.extract) html.push('<p>' + escapeHtml(data.extract) + '</p>');
+        else html.push('<p class="nota">No hay resumen disponible.</p>');
+        if(data.content_urls && data.content_urls.desktop && data.content_urls.desktop.page) html.push('<p class="nota"><a href="' + escapeHtml(data.content_urls.desktop.page) + '" target="_blank" rel="noopener">Leer en Wikipedia</a></p>');
         resultadoEl.innerHTML = html.join('');
-      }catch(err){
-        resultadoEl.innerHTML = '<p class="nota">Error al buscar. Intenta de nuevo.</p>';
-        console.error('getResumen error:', err);
-      }
+      }catch(err){ resultadoEl.innerHTML = '<p class="nota">Error al buscar. Intenta de nuevo.</p>'; console.error('getResumen error:', err); }
     }
+    function escapeHtml(str){ return String(str).replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+    btn.addEventListener('click', () => { const q = input.value.trim(); if(!q) return; buscarSugerencias(q).then(()=>{ const first = sugerenciasEl.querySelector('.sugerencia'); if(first) getResumen(first.textContent); else getResumen(q); }); });
+    let timer = null; input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(()=>buscarSugerencias(input.value.trim()),350); });
+    input.addEventListener('keyup', (e) => { if(e.key==='Enter') btn.click(); });
 
-    function escapeHtml(str){
-      return String(str).replace(/[&<>"]/g, function(m){
-        return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[m];
-      });
-    }
-
-    btn.addEventListener('click', () => {
-      const q = input.value.trim();
-      if(!q) return;
-      buscarSugerencias(q).then(() => {
-        const first = sugerenciasEl.querySelector('.sugerencia');
-        if(first){
-          getResumen(first.textContent);
-        } else {
-          getResumen(q);
-        }
-      });
-    });
-    let timer = null;
-    input.addEventListener('input', () => {
-      clearTimeout(timer);
-      timer = setTimeout(() => buscarSugerencias(input.value.trim()), 350);
-    });
-    input.addEventListener('keyup', (e) => {
-      if(e.key === 'Enter') btn.click();
-    });
-
-    /* ===== MALLA: estado en localStorage + UI ===== */
+    /* ========== MALLA: estado en localStorage + UI (con materias predefinidas) ========== */
     const STORAGE_KEY = 'mallaData_v1';
-    const defaultYears = [1,2,3,4,5,6];
+    const defaultYears = ['CBC',1,2,3,4,5,6];
 
     // estructura: { materias: [ {id, name, year, p1, p2} ] }
     function loadMalla(){
       try{
         const raw = localStorage.getItem(STORAGE_KEY);
-        if(!raw) return { materias: [] };
+        if(!raw) return null;
         return JSON.parse(raw);
       }catch(e){
         console.warn('Error parse malla', e);
-        return { materias: [] };
+        return null;
       }
     }
     function saveMalla(data){
@@ -430,7 +329,70 @@
     const btnImport = document.getElementById('btnImport');
     const fileImport = document.getElementById('fileImport');
 
+    // materias predefinidas tomadas del esquema que enviaste
+    const defaultSubjects = [
+      // CBC
+      { name: 'Química', year: 'CBC' },
+      { name: 'Biofísica', year: 'CBC' },
+      { name: 'Biología', year: 'CBC' },
+      { name: 'IPC', year: 'CBC' },
+      { name: 'ICSE', year: 'CBC' },
+      { name: 'Matemática', year: 'CBC' },
+
+      // Ciclo biomédico - Año 1
+      { name: 'Anatomía', year: 1 },
+      { name: 'Histología', year: 1 },
+      { name: 'Embriología', year: 1 },
+      { name: 'Genética', year: 1 },
+
+      // Ciclo biomédico - Año 2
+      { name: 'Bioquímica', year: 2 },
+      { name: 'Inmunología', year: 2 },
+      { name: 'Microbiología', year: 2 },
+      { name: 'Fisiología', year: 2 },
+
+      // Materias transversales (puedes darlas 1ero a 5to) -> asignadas Año 3 por defecto
+      { name: 'Salud Mental', year: 3 },
+      { name: 'Bioética', year: 3 },
+      { name: 'Salud Pública', year: 3 },
+      { name: 'Inglés Médico', year: 3 },
+
+      // Ciclo clínico - materias básicas
+      { name: 'Patología', year: 3 },
+      { name: 'Semiología', year: 3 },
+      { name: 'Farmacología I', year: 3 },
+      { name: 'Farmacología II', year: 3 },
+      { name: 'Medicina Legal', year: 3 },
+      { name: 'Toxicología', year: 3 },
+
+      // Clí­nicas (asignadas 4to por defecto)
+      { name: 'Medicina Interna', year: 4 },
+      { name: 'Nutrición', year: 4 },
+      { name: 'Diagnóstico por imágenes', year: 4 },
+      { name: 'Dermatología', year: 4 },
+      { name: 'Infectología', year: 4 },
+      { name: 'Neumonología', year: 4 },
+      { name: 'Neurología', year: 4 },
+      { name: 'Psiquiatría', year: 4 },
+
+      // Cirugías y especialidades (5/6)
+      { name: 'Neurocirugía', year: 5 },
+      { name: 'Pediatría', year: 5 },
+      { name: 'Obstetricia', year: 5 },
+      { name: 'Ginecología', year: 5 },
+      { name: 'Cirugía General', year: 5 },
+      { name: 'Urología', year: 5 },
+      { name: 'Traumatología', year: 5 },
+      { name: 'Oftalmología', year: 6 },
+      { name: 'Otorrinolaringología', year: 6 }
+    ];
+
     let malla = loadMalla();
+    if(!malla || !Array.isArray(malla.materias) || malla.materias.length === 0){
+      // crear malla inicial con ids
+      malla = { materias: defaultSubjects.map(s => ({ id: uid(), name: s.name, year: s.year, p1: null, p2: null })) };
+      saveMalla(malla);
+    }
 
     function renderMalla(){
       mallaYearsEl.innerHTML = '';
@@ -438,10 +400,15 @@
         const box = document.createElement('div');
         box.className = 'year-box';
         box.setAttribute('data-year', year);
-        box.innerHTML = '<h3>Año ' + year + '</h3><div class="materias-list"></div>';
+        const title = (year === 'CBC') ? 'CBC' : ('Año ' + year);
+        box.innerHTML = '<h3>' + title + '</h3><div class="materias-list"></div>';
         const list = box.querySelector('.materias-list');
 
-        const materiasDelYear = malla.materias.filter(m => Number(m.year) === year);
+        // filtrar materias según el tipo de año (soporta 'CBC' string o número)
+        const materiasDelYear = malla.materias.filter(m => {
+          return (typeof year === 'number') ? Number(m.year) === year : m.year === year;
+        });
+
         if(materiasDelYear.length === 0){
           const empty = document.createElement('p');
           empty.className = 'nota';
@@ -486,6 +453,9 @@
           renderMalla();
         });
       });
+
+      // Update calendar subject options (if calendar present)
+      refreshSubjectOptions();
     }
 
     function calcAvg(p1, p2){
@@ -497,18 +467,15 @@
       return ((a + b) / 2).toFixed(1);
     }
 
-    function uid(){
-      return 'm' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
-    }
-
     btnAgregarMateria.addEventListener('click', () => {
       const name = materiaNombre.value.trim();
-      const year = materiaYear.value;
+      const yearVal = materiaYear.value;
+      const year = (yearVal === 'CBC') ? 'CBC' : Number(yearVal);
       if(!name){
         alert('Escribe el nombre de la materia.');
         return;
       }
-      const nueva = { id: uid(), name, year: Number(year), p1: null, p2: null };
+      const nueva = { id: uid(), name, year: year, p1: null, p2: null };
       malla.materias.push(nueva);
       saveMalla(malla);
       materiaNombre.value = '';
@@ -547,83 +514,168 @@
       reader.readAsText(f);
     });
 
-    // Inicializar malla (cargar ejemplo si vacío)
-    if(!malla || !Array.isArray(malla.materias)) malla = { materias: [] };
     renderMalla();
 
-    /* ===== CALENDARIO simple ===== */
-    const EVENTS_KEY = 'planner_events_v1';
-    const evFecha = document.getElementById('evFecha');
-    const evTitulo = document.getElementById('evTitulo');
-    const btnAddEvent = document.getElementById('btnAddEvent');
-    const eventList = document.getElementById('eventList');
-    const btnClearEvents = document.getElementById('btnClearEvents');
+    /* ========== CALENDARIO mensual (igual que antes) ========== */
+    const EVENTS_KEY = 'planner_events_v2'; // nueva clave más general
+    const calendarGrid = document.getElementById('calendarGrid');
+    const monthTitle = document.getElementById('monthTitle');
+    const prevMonth = document.getElementById('prevMonth');
+    const nextMonth = document.getElementById('nextMonth');
+    const todayBtn = document.getElementById('todayBtn');
+    const dayPanel = document.getElementById('dayPanel');
+    const dayPanelTitle = document.getElementById('dayPanelTitle');
+    const dayEvents = document.getElementById('dayEvents');
+    const evSubject = document.getElementById('evSubject');
+    const evSubjectFree = document.getElementById('evSubjectFree');
+    const evNote = document.getElementById('evNote');
+    const addEventBtn = document.getElementById('addEventBtn');
+    const delAllDayEvents = document.getElementById('delAllDayEvents');
+    const closeDayPanel = document.getElementById('closeDayPanel');
+    const btnExportEvents = document.getElementById('btnExportEvents');
 
-    function loadEvents(){
-      try{
-        const raw = localStorage.getItem(EVENTS_KEY);
-        if(!raw) return [];
-        return JSON.parse(raw);
-      }catch(e){ return []; }
-    }
+    let events = (function(){ try{ const raw = localStorage.getItem(EVENTS_KEY); return raw ? JSON.parse(raw) : []; }catch(e){ return []; } })();
+    let current = new Date(); // month view current date
+    let selectedDateStr = null; // 'YYYY-MM-DD'
+
     function saveEvents(arr){ localStorage.setItem(EVENTS_KEY, JSON.stringify(arr)); }
 
-    let events = loadEvents();
+    function refreshSubjectOptions(){
+      if(!evSubject) return;
+      const currentVal = evSubject.value || '';
+      evSubject.innerHTML = '<option value="">-- selecciona o escribe --</option>';
+      const names = Array.from(new Set((malla.materias || []).map(m => m.name))).sort();
+      names.forEach(n => { const o = document.createElement('option'); o.value = n; o.textContent = n; evSubject.appendChild(o); });
+      if(currentVal) evSubject.value = currentVal;
+    }
 
-    function renderEvents(){
-      eventList.innerHTML = '';
-      if(events.length === 0){
-        eventList.innerHTML = '<p class="nota">No hay eventos.</p>';
+    function renderMonth(date){
+      calendarGrid.innerHTML = '';
+      const year = date.getFullYear(), month = date.getMonth();
+      const first = new Date(year, month, 1);
+      const last = new Date(year, month + 1, 0);
+      const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+      monthTitle.textContent = monthNames[month] + ' ' + year;
+      const firstWeekday = (first.getDay() + 6) % 7;
+      for(let i=0;i<firstWeekday;i++){
+        const blank = document.createElement('div'); blank.className='cal-day'; blank.style.background='transparent'; blank.style.border='0'; calendarGrid.appendChild(blank);
+      }
+      for(let d=1; d<=last.getDate(); d++){
+        const dt = new Date(year, month, d);
+        const dayStr = toISODate(dt);
+        const dayEl = document.createElement('div'); dayEl.className='cal-day'; dayEl.tabIndex = 0;
+        dayEl.innerHTML = `<div class="date-num">${d}</div><div class="events-dot" aria-hidden="true"></div>`;
+        const dots = dayEl.querySelector('.events-dot');
+        const evs = events.filter(e => e.date === dayStr);
+        evs.slice(0,3).forEach(() => { const dot = document.createElement('span'); dot.className='event-dot'; dots.appendChild(dot); });
+        const now = new Date();
+        if(isSameDay(now, dt)) dayEl.style.boxShadow = 'inset 0 0 0 2px rgba(37,99,235,0.12)';
+        dayEl.addEventListener('click', () => openDayPanel(dayStr));
+        dayEl.addEventListener('keydown', (e) => { if(e.key==='Enter' || e.key===' ') openDayPanel(dayStr); });
+        calendarGrid.appendChild(dayEl);
+      }
+    }
+
+    function toISODate(d){ const yy = d.getFullYear(); const mm = String(d.getMonth()+1).padStart(2,'0'); const dd = String(d.getDate()).padStart(2,'0'); return `${yy}-${mm}-${dd}`; }
+    function isSameDay(a,b){ return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate(); }
+
+    function openDayPanel(dateStr){
+      selectedDateStr = dateStr;
+      dayPanelTitle.textContent = formatDateReadable(dateStr);
+      renderDayEvents();
+      refreshSubjectOptions();
+      evSubject.value = '';
+      evSubjectFree.value = '';
+      evNote.value = '';
+      dayPanel.style.display = 'block';
+      dayPanel.focus();
+    }
+
+    function formatDateReadable(iso){ const [y,m,d] = iso.split('-'); return `${d}/${m}/${y}`; }
+
+    function renderDayEvents(){
+      dayEvents.innerHTML = '';
+      const dayEvs = events.filter(e => e.date === selectedDateStr);
+      if(dayEvs.length === 0){
+        dayEvents.innerHTML = '<p class="nota">No hay eventos en este día.</p>';
         return;
       }
-      // ordenar por fecha asc
-      events.sort((a,b) => a.date.localeCompare(b.date));
-      events.forEach(ev => {
-        const el = document.createElement('div');
-        el.style.background = '#fff';
-        el.style.border = '1px solid #e6eefc';
-        el.style.padding = '10px';
-        el.style.borderRadius = '8px';
-        el.innerHTML = `<strong>${escapeHtml(ev.date)}</strong> — ${escapeHtml(ev.title)} <button style="float:right;background:#ef4444;color:#fff;border:0;padding:6px 8px;border-radius:6px;cursor:pointer;" data-id="${ev.id}">Eliminar</button>`;
-        eventList.appendChild(el);
-      });
-      eventList.querySelectorAll('button[data-id]').forEach(b => {
-        b.addEventListener('click', () => {
-          const id = b.dataset.id;
-          events = events.filter(x => x.id !== id);
-          saveEvents(events);
-          renderEvents();
+      dayEvs.forEach(ev => {
+        const el = document.createElement('div'); el.className='ev';
+        el.innerHTML = `<strong>${escapeHtml(ev.subject)}</strong><div style="font-size:13px;color:${ev.note? '#334155':'#64748b'};margin-top:6px;">${escapeHtml(ev.note || '(sin notas)')}</div>`;
+        const del = document.createElement('button'); del.textContent='Eliminar'; del.className='btn-ghost';
+        del.style.marginTop='8px'; del.addEventListener('click', () => {
+          if(!confirm('Eliminar evento?')) return;
+          events = events.filter(x => x.id !== ev.id); saveEvents(events); renderDayEvents(); renderMonth(current);
         });
+        el.appendChild(del);
+        dayEvents.appendChild(el);
       });
     }
 
-    btnAddEvent.addEventListener('click', () => {
-      const date = evFecha.value;
-      const title = evTitulo.value.trim();
-      if(!date || !title){ alert('Completa fecha y título'); return; }
-      events.push({ id: uid(), date, title });
+    (function migrateOldEvents(){
+      try{
+        const old = localStorage.getItem('planner_events_v1');
+        if(old && !localStorage.getItem(EVENTS_KEY)){
+          localStorage.setItem(EVENTS_KEY, old);
+          events = JSON.parse(old);
+        }
+      }catch(e){}
+    })();
+
+    addEventBtn.addEventListener('click', () => {
+      const subjSelected = evSubject.value.trim();
+      const subjFree = evSubjectFree.value.trim();
+      const subject = subjFree || subjSelected;
+      const note = evNote.value.trim();
+      if(!subject){ alert('Selecciona o escribe una materia/asunto.'); return; }
+      events.push({ id: uid(), date: selectedDateStr, subject, note });
       saveEvents(events);
-      evFecha.value = '';
-      evTitulo.value = '';
-      renderEvents();
+      renderDayEvents();
+      renderMonth(current);
+      evSubjectFree.value = '';
+      evNote.value = '';
     });
 
-    btnClearEvents.addEventListener('click', () => {
-      if(!confirm('Borrar todos los eventos?')) return;
-      events = [];
-      saveEvents(events);
-      renderEvents();
+    delAllDayEvents.addEventListener('click', () => {
+      if(!confirm('Borrar todos los eventos de este día?')) return;
+      events = events.filter(x => x.date !== selectedDateStr);
+      saveEvents(events); renderDayEvents(); renderMonth(current);
     });
 
-    renderEvents();
+    closeDayPanel.addEventListener('click', () => { dayPanel.style.display='none'; });
+
+    prevMonth.addEventListener('click', () => { current = new Date(current.getFullYear(), current.getMonth()-1, 1); renderMonth(current); });
+    nextMonth.addEventListener('click', () => { current = new Date(current.getFullYear(), current.getMonth()+1, 1); renderMonth(current); });
+    todayBtn.addEventListener('click', () => { current = new Date(); renderMonth(current); });
+
+    btnExportEvents.addEventListener('click', () => {
+      const dataStr = JSON.stringify(events, null, 2);
+      const blob = new Blob([dataStr], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'planner-events.json'; a.click(); URL.revokeObjectURL(url);
+    });
+
+    function initCalendar(){
+      refreshSubjectOptions();
+      current = new Date();
+      renderMonth(current);
+    }
+
+    initCalendar();
+
+    document.addEventListener('click', (e) => {
+      if(dayPanel.style.display === 'none') return;
+      if(dayPanel.contains(e.target)) return;
+      if(e.target.closest('.cal-day')) return;
+      dayPanel.style.display = 'none';
+    });
 
     /* Inicializar pestañas desde hash y listo */
     initFromHash();
 
-    // small helper log to console
     console.log('Planner inicializado — malla guardada en localStorage key:', STORAGE_KEY);
   })();
   </script>
-
 </body>
 </html>
