@@ -1,121 +1,81 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Planner Medicina UBA</title>
   <style>
     :root{
-      --blue-700: #1e40af;
-      --blue-600: #2563eb;
-      --bg: #f1f5f9;
-      --panel-bg: #ffffff;
-      --text: #0f172a;
-      --muted: #64748b;
-      --accent: #10b981;
-      --danger: #ef4444;
-      --btn-delete: var(--blue-600); /* botón eliminar ahora azul */
+      --blue-700:#1e40af; --blue-600:#2563eb; --bg:#f1f5f9; --panel:#fff;
+      --text:#0f172a; --muted:#64748b; --accent:#10b981; --delete-blue:#2563eb;
     }
-
     html,body{margin:0;padding:0;font-family:Inter, Arial, Helvetica, sans-serif;background:var(--bg);color:var(--text);}
-
-    /* ---------- TABS ---------- */
-    .tabs { display:flex; gap:6px; background:var(--blue-700); padding:8px; align-items:center; flex-wrap:wrap; }
-    .tabs [role="tab"]{ flex:1 1 auto; padding:12px 16px; border:0; background:transparent; color:#fff; cursor:pointer; font-size:15px; text-align:center; border-radius:8px; transition: background .12s, transform .06s; }
-    .tabs [role="tab"]:hover{ background:rgba(255,255,255,0.06); transform:translateY(-1px); }
-    .tabs [role="tab"]:focus{ outline:3px solid rgba(255,255,255,0.18); outline-offset:2px; }
-    .tabs [role="tab"][aria-selected="true"]{ background:var(--blue-600); box-shadow: 0 2px 0 rgba(0,0,0,0.08) inset; font-weight:600; }
-
-    /* ---------- CONTENIDO ---------- */
-    .tab { display:none; padding:20px; background:var(--panel-bg); margin:16px; border-radius:10px; box-shadow: 0 8px 20px rgba(15,23,42,0.06); }
-    .tab.activa { display:block; }
-    h2{ margin-top:0; color:#0b1220; }
-    p{ line-height:1.5; color:#334155; }
-
-    /* ===== Glosario / Asistente ===== */
-    .glosario-form { display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
-    .glosario-form input[type="search"], .glosario-form input[type="text"]{ flex:1 1 320px; padding:10px 12px; border-radius:8px; border:1px solid #cbd5e1; font-size:15px; background:#fff; }
-    .glosario-form button { padding:10px 14px; border-radius:8px; border:0; background:var(--blue-600); color:#fff; cursor:pointer; font-weight:600; }
-    .sugerencias { margin-bottom:10px; display:flex; gap:8px; flex-wrap:wrap; }
-    .sugerencia { background:#eef2ff; color:#1e3a8a; padding:6px 10px; border-radius:999px; cursor:pointer; font-size:14px; border:1px solid rgba(30,58,138,0.06); }
-    .resultado, .conversacion { background:#fff; border:1px solid #e2e8f0; padding:14px; border-radius:8px; }
-    .nota { margin-top:8px; font-size:13px; color:var(--muted); }
-    .resultado img { max-width:140px; float:right; margin-left:12px; border-radius:6px; }
-
-    /* Conversational assistant area */
-    .chat-area { display:flex; gap:12px; }
-    .chat-area .history { flex:1; max-height:260px; overflow:auto; padding:8px; border-radius:6px; border:1px solid #e6eefc; background:#fbfdff; }
-    .chat-controls { display:flex; gap:8px; margin-top:8px; }
-
-    /* ===== MALLA (tabla de materias por año y CBC) ===== */
-    .malla-controls { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; align-items:center; }
-    .malla-controls input, .malla-controls select { padding:8px 10px; border-radius:6px; border:1px solid #cbd5e1; font-size:14px; background:#fff; }
-    .malla-controls button { padding:9px 12px; border-radius:6px; border:0; background:var(--blue-600); color:#fff; cursor:pointer; font-weight:600; }
-    .malla-years { display:flex; gap:12px; flex-wrap:wrap; margin-top:12px; }
-    .year-box { flex:1 1 240px; background:#f8fafc; border:1px solid #e6eefc; padding:12px; border-radius:8px; }
-    .materia { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
-    .materia .name { flex:1; font-weight:600; color:#0f172a; }
-    .materia input[type="number"]{ width:84px; padding:6px; border-radius:6px; border:1px solid #e2e8f0; }
-    .materia .avg { min-width:56px; text-align:center; font-weight:700; color:#0b1220; }
-    .materia button.small { padding:6px 8px; border-radius:6px; border:0; cursor:pointer; background:var(--btn-delete); color:#fff; font-size:13px; } /* ahora azul */
-    .materia button.ter { padding:6px 8px; border-radius:6px; border:0; cursor:pointer; background:#6b7280; color:#fff; font-size:13px; } /* temario */
-
-    /* temario modal */
-    .temario-panel { position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); width:480px; max-width:calc(100% - 24px); background:#fff; border-radius:10px; padding:12px; box-shadow:0 24px 48px rgba(2,6,23,0.16); z-index:1500; }
-    .temario-panel h4{ margin:0 0 8px 0; }
-    .temario-list { max-height:300px; overflow:auto; margin-bottom:8px; display:flex; flex-direction:column; gap:8px; }
-
-    /* ===== CALENDARIO mensual ===== */
-    .cal-header { display:flex; gap:8px; align-items:center; margin-bottom:12px; }
-    .cal-header .month-title { flex:1; text-align:center; font-size:18px; font-weight:700; }
-    .cal-nav button { padding:8px 10px; border-radius:6px; border:0; background:var(--blue-600); color:#fff; cursor:pointer; }
-    .calendar-grid { display:grid; grid-template-columns: repeat(7, 1fr); gap:6px; }
-    .cal-day { background:#fff; border-radius:8px; min-height:84px; padding:8px; border:1px solid #e6eefc; position:relative; }
-    .cal-day .date-num { font-weight:700; color:#0b1220; }
-    .cal-day .events-dot { position:absolute; bottom:6px; left:8px; display:flex; gap:6px; flex-wrap:wrap; }
-    .event-dot { width:10px; height:10px; border-radius:50%; background:var(--accent); border:2px solid #fff; box-shadow:0 1px 0 rgba(0,0,0,0.06); }
-    .event-dot.parcial { background:#ef4444; } /* parcial rojo */
-
-    .cal-weekdays { display:grid; grid-template-columns: repeat(7, 1fr); gap:6px; margin-bottom:6px; }
-    .weekday { text-align:center; font-weight:700; color:var(--muted); }
-
-    .day-panel { position:fixed; right:18px; top:80px; width:420px; max-width:calc(100% - 32px); background:#fff; border:1px solid #e2e8f0; border-radius:10px; padding:12px; box-shadow:0 24px 48px rgba(2,6,23,0.12); z-index:1200; }
-    .day-panel h4 { margin:0 0 8px 0; }
-    .day-panel .events-list { max-height:240px; overflow:auto; margin-bottom:8px; display:flex; flex-direction:column; gap:8px; }
-    .day-panel .ev { border:1px solid #f0f6ff; padding:8px; border-radius:8px; background:#f8fafc; }
-
-    .btn-ghost { background:transparent; border:1px solid #cbd5e1; padding:8px 10px; border-radius:6px; cursor:pointer; }
-
-    /* Pomodoro widget bottom-right */
-    .pomodoro {
-      position:fixed; right:12px; bottom:12px; width:260px; background:#fff; border-radius:10px; padding:10px; box-shadow:0 12px 30px rgba(2,6,23,0.12); z-index:1400;
-    }
-    .pomodoro .timer { font-size:28px; font-weight:800; text-align:center; margin-bottom:8px; }
-    .pomodoro .controls { display:flex; gap:8px; justify-content:center; }
-
-    @media (max-width:720px){
-      .day-panel { left:8px; right:8px; top:auto; bottom:12px; width:auto; max-width:none; }
-      .pomodoro { left:8px; right:8px; bottom:12px; margin:0 auto; width:auto; max-width:360px; }
-    }
+    /* Tabs */
+    .tabs{display:flex;gap:6px;background:var(--blue-700);padding:8px;flex-wrap:wrap;}
+    .tabs [role="tab"]{flex:1;padding:12px 16px;color:#fff;border:0;background:transparent;border-radius:8px;cursor:pointer;text-align:center;}
+    .tabs [role="tab"][aria-selected="true"]{background:var(--blue-600);font-weight:600}
+    /* Panels */
+    .tab{display:none;padding:18px;margin:16px;border-radius:10px;background:var(--panel);box-shadow:0 8px 20px rgba(15,23,42,0.06)}
+    .tab.activa{display:block}
+    h2{margin:0 0 12px 0}
+    .nota{color:var(--muted);font-size:13px}
+    /* Malla */
+    .malla-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+    .malla-controls input,.malla-controls select{padding:8px;border-radius:6px;border:1px solid #cbd5e1;background:#fff}
+    .malla-controls button{padding:9px 12px;border-radius:6px;border:0;background:var(--blue-600);color:#fff;cursor:pointer}
+    .malla-years{display:flex;gap:12px;flex-wrap:wrap}
+    .year-box{flex:1 1 240px;background:#f8fafc;border:1px solid #e6eefc;padding:12px;border-radius:8px}
+    .materia{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+    .materia .name{flex:1;font-weight:700}
+    .materia input[type="number"]{width:84px;padding:6px;border-radius:6px;border:1px solid #e2e8f0}
+    .materia .avg{min-width:56px;text-align:center;font-weight:700}
+    .materia button.small{padding:6px 8px;border-radius:6px;border:0;cursor:pointer;background:var(--delete-blue);color:#fff}
+    .materia button.ter{padding:6px 8px;border-radius:6px;border:0;cursor:pointer;background:#6b7280;color:#fff}
+    /* Calendario */
+    .cal-header{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+    .cal-nav button,.btn-ghost{padding:8px 10px;border-radius:6px;border:0;background:var(--blue-600);color:#fff;cursor:pointer}
+    .btn-ghost{background:transparent;border:1px solid #cbd5e1;color:var(--text)}
+    .cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px}
+    .weekday{text-align:center;font-weight:700;color:var(--muted)}
+    .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+    .cal-day{background:#fff;border-radius:8px;min-height:84px;padding:8px;border:1px solid #e6eefc;position:relative;cursor:pointer}
+    .cal-day .date-num{font-weight:700}
+    .events-dot{position:absolute;bottom:6px;left:8px;display:flex;gap:6px;flex-wrap:wrap}
+    .event-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid #fff}
+    .event-dot.parcial{background:#ef4444}
+    /* Day panel */
+    .day-panel{position:fixed;right:18px;top:80px;width:420px;max-width:calc(100% - 32px);background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px;box-shadow:0 24px 48px rgba(2,6,23,0.12);z-index:1200;display:none}
+    .day-panel h4{margin:0 0 8px 0}
+    .events-list{max-height:240px;overflow:auto;margin-bottom:8px;display:flex;flex-direction:column;gap:8px}
+    .ev{border:1px solid #f0f6ff;padding:8px;border-radius:8px;background:#f8fafc}
+    /* Temario modal */
+    .temario-panel{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:520px;max-width:calc(100% - 24px);background:#fff;border-radius:10px;padding:12px;box-shadow:0 24px 48px rgba(2,6,23,0.16);z-index:1500;display:none}
+    .temario-list{max-height:280px;overflow:auto;margin-bottom:8px;display:flex;flex-direction:column;gap:8px}
+    /* Grades modal */
+    .grades-panel{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:520px;max-width:calc(100% - 24px);background:#fff;border-radius:10px;padding:12px;box-shadow:0 24px 48px rgba(2,6,23,0.16);z-index:1500;display:none}
+    .grades-list{max-height:320px;overflow:auto;margin-bottom:8px;display:flex;flex-direction:column;gap:8px}
+    /* Pomodoro tab */
+    .pom-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+    .pom-controls input{padding:8px;border-radius:6px;border:1px solid #cbd5e1}
+    .temario-subj{margin-top:10px;background:#fbfdff;border:1px solid #e6eefc;padding:10px;border-radius:8px}
+    @media (max-width:720px){ .day-panel{left:8px;right:8px;top:auto;bottom:12px} .temario-panel,.grades-panel{width:calc(100% - 24px);left:12px;transform:none} }
   </style>
 </head>
 <body>
-
-  <!-- ---------- PESTAÑAS ---------- -->
-  <nav class="tabs" role="tablist" aria-label="Navegación principal">
+  <nav class="tabs" role="tablist" aria-label="Navegación">
     <button id="tab-malla" role="tab" aria-controls="malla" aria-selected="false" tabindex="0">Malla</button>
-    <button id="tab-glosario" role="tab" aria-controls="glosario" aria-selected="false" tabindex="-1">Asistente</button>
+    <button id="tab-asistente" role="tab" aria-controls="asistente" aria-selected="false" tabindex="-1">Asistente</button>
     <button id="tab-calendario" role="tab" aria-controls="calendario" aria-selected="false" tabindex="-1">Calendario</button>
+    <button id="tab-pomodoro" role="tab" aria-controls="pomodoro" aria-selected="false" tabindex="-1">Pomodoro</button>
   </nav>
 
   <main>
-    <!-- ---------- MALLA ---------- -->
+    <!-- MALLA -->
     <section id="malla" class="tab" role="tabpanel" aria-labelledby="tab-malla" tabindex="0">
       <h2>Malla</h2>
-
       <div class="malla-controls" aria-label="Controles malla">
-        <input id="materiaNombre" placeholder="Nombre de la materia (ej. Anatomía)" aria-label="Nombre de la materia">
-        <select id="materiaYear" aria-label="Año de la materia">
+        <input id="materiaNombre" placeholder="Nombre de la materia (ej. Anatomía)" />
+        <select id="materiaYear">
           <option value="CBC">CBC</option>
           <option value="1">Año 1</option>
           <option value="2">Año 2</option>
@@ -125,382 +85,196 @@
           <option value="6">Año 6</option>
         </select>
         <button id="btnAgregarMateria">Agregar materia</button>
-
-        <button id="btnExport" style="margin-left:auto;background:#10b981;">Exportar JSON</button>
-        <button id="btnImport" style="background:#f59e0b;">Importar JSON</button>
-        <input id="fileImport" type="file" accept="application/json" style="display:none;">
+        <button id="btnExport" style="margin-left:auto;background:var(--accent)">Exportar JSON</button>
+        <button id="btnImport" style="background:#f59e0b">Importar JSON</button>
+        <input id="fileImport" type="file" accept="application/json" style="display:none" />
+        <button id="btnVerCalificaciones" style="margin-left:8px;background:#111827;color:#fff">Ver calificaciones</button>
       </div>
 
       <div class="malla-years" id="mallaYears" aria-live="polite"></div>
-      <p class="nota">Haz clic en los inputs de parcial para poner las notas. El botón "Temario" permite agregar los temas por materia.</p>
+      <p class="nota">Usá "Temario" para agregar temas por materia. "Ver calificaciones" abre una vista con todas las notas.</p>
     </section>
 
-    <!-- ---------- GLOSARIO / ASISTENTE (WIKIPEDIA + conversacional básico) ---------- -->
-    <section id="glosario" class="tab" role="tabpanel" aria-labelledby="tab-glosario" tabindex="0">
-      <h2>Asistente — Resúmenes (Wikipedia) y Conversación básica</h2>
+    <!-- ASISTENTE -->
+    <section id="asistente" class="tab" role="tabpanel" aria-labelledby="tab-asistente" tabindex="0">
+      <h2>Asistente — Wikipedia + Conversacional</h2>
 
-      <div class="glosario-form" role="search" aria-label="Buscar concepto">
-        <input id="buscarTermino" type="search" placeholder="Busca en Wikipedia (ej. 'anatomía del corazón')" aria-label="Término a buscar">
-        <button id="btnBuscar" type="button">Buscar</button>
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <input id="buscarTermino" type="search" placeholder="Buscar en Wikipedia (ej. 'Fisiología')" />
+        <button id="btnBuscar">Buscar</button>
       </div>
+      <div id="sugerencias" style="margin-bottom:8px"></div>
+      <div id="resultado" style="background:#fff;border:1px solid #e2e8f0;padding:12px;border-radius:8px"></div>
 
-      <div id="sugerencias" class="sugerencias" aria-live="polite"></div>
+      <hr style="margin:12px 0" />
+      <h3>Asistente conversacional gratuito</h3>
+      <p class="nota">Haz preguntas sobre materias y la carrera. El asistente busca en Wikipedia y sintetiza (sin API keys).</p>
 
-      <div id="resultado" class="resultado" aria-live="polite">
-        <p class="nota">Escribe un término y pulsa "Buscar".</p>
-      </div>
-
-      <hr style="margin:12px 0;">
-
-      <h3>Asistente conversacional (gratuito)</h3>
-      <p class="nota">Este asistente busca en Wikipedia y combina resúmenes para darte una respuesta. No requiere API keys.</p>
-
-      <div class="chat-area">
-        <div style="flex:1;">
-          <div class="history" id="chatHistory" aria-live="polite"></div>
-          <div class="chat-controls">
-            <input id="chatInput" type="text" placeholder="Preguntame sobre la carrera (ej. '¿Qué contenidos tiene Fisiología?')" style="flex:1;padding:8px;border-radius:6px;border:1px solid #cbd5e1;">
+      <div style="display:flex;gap:12px">
+        <div style="flex:1;display:flex;flex-direction:column">
+          <div id="chatHistory" style="background:#fbfdff;border:1px solid #e6eefc;padding:8px;border-radius:6px;max-height:320px;overflow:auto"></div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <input id="chatInput" placeholder="Ej.: ¿Qué contenidos tiene Bioquímica?" style="flex:1;padding:8px;border-radius:6px;border:1px solid #cbd5e1" />
             <button id="chatSend" class="btn-ghost">Preguntar</button>
             <button id="chatClear" class="btn-ghost">Limpiar</button>
           </div>
         </div>
-        <div style="width:260px;">
-          <div class="conversacion" id="chatAssistant">
-            <strong>Consejo</strong>
-            <p class="nota">El asistente usa Wikipedia. Para respuestas más personalizadas puedo integrar un modelo (requiere API).</p>
-            <p class="nota">También puedes usar la sección de resultados para leer artículos completos.</p>
+        <div style="width:260px">
+          <div style="background:#fff;border:1px solid #e2e8f0;padding:10px;border-radius:6px">
+            <strong>Consejos</strong>
+            <p class="nota">Para respuestas más largas usa preguntas específicas: p. ej. "Temas clave para parcial de Anatomía".</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ---------- CALENDARIO mensual ---------- -->
+    <!-- CALENDARIO -->
     <section id="calendario" class="tab" role="tabpanel" aria-labelledby="tab-calendario" tabindex="0">
-      <h2>Calendario</h2>
-
-      <div class="cal-header" aria-hidden="false">
-        <div class="cal-nav">
-          <button id="prevMonth" aria-label="Mes anterior">&larr;</button>
-          <button id="todayBtn" class="btn-ghost" aria-label="Hoy">Hoy</button>
-          <button id="nextMonth" aria-label="Mes siguiente">&rarr;</button>
+      <h2>Calendario mensual</h2>
+      <div class="cal-header">
+        <div>
+          <button id="prevMonthNav">&larr;</button>
+          <button id="todayBtn" class="btn-ghost">Hoy</button>
+          <button id="nextMonthNav">&rarr;</button>
         </div>
-        <div class="month-title" id="monthTitle" aria-live="polite">Mes Año</div>
-        <div style="width:120px; text-align:right;">
-          <button id="btnExportEvents" style="background:var(--accent); color:#fff; border:0; padding:8px 10px; border-radius:6px;">Exportar</button>
+        <div id="monthTitle" style="flex:1;text-align:center;font-weight:700"></div>
+        <div style="width:120px;text-align:right">
+          <button id="btnExportEvents" style="background:var(--accent);color:#fff">Exportar</button>
         </div>
       </div>
 
-      <div class="cal-weekdays" aria-hidden="true">
+      <div class="cal-weekdays">
         <div class="weekday">Lun</div><div class="weekday">Mar</div><div class="weekday">Mié</div><div class="weekday">Jue</div><div class="weekday">Vie</div><div class="weekday">Sáb</div><div class="weekday">Dom</div>
       </div>
 
       <div id="calendarGrid" class="calendar-grid" role="grid" aria-label="Calendario mensual"></div>
+      <p class="nota">Haz clic en un día para ver/añadir exámenes o sesiones de estudio (puedes marcar "Parcial").</p>
 
-      <p class="nota">Haz clic en un día para ver los eventos y añadir uno. Para parciales marca "Parcial" y añade los temas a estudiar.</p>
-
-      <!-- day panel (dinámico) -->
-      <div id="dayPanel" class="day-panel" style="display:none;" role="dialog" aria-modal="true" aria-label="Detalles del día">
-        <button id="closeDayPanel" style="float:right;" class="btn-ghost">Cerrar</button>
+      <div id="dayPanel" class="day-panel" role="dialog" aria-modal="true" aria-label="Panel del día">
+        <button id="closeDayPanel" class="btn-ghost" style="float:right">Cerrar</button>
         <h4 id="dayPanelTitle">DD/MM/YYYY</h4>
-
-        <div class="events-list" id="dayEvents"></div>
-
-        <hr>
-        <form id="addEventForm" onsubmit="return false;">
-          <label for="evType">Tipo</label><br>
-          <select id="evType" style="width:100%;padding:8px;border-radius:6px;border:1px solid #cbd5e1;margin:6px 0;background:#fff;">
+        <div id="dayEvents" class="events-list"></div>
+        <hr />
+        <div style="margin-top:8px">
+          <label>Tipo</label>
+          <select id="evType" style="width:100%;padding:8px;margin:6px 0">
             <option value="estudio">Estudio</option>
             <option value="parcial">Parcial</option>
             <option value="otro">Otro</option>
           </select>
-
-          <label for="evSubject">Materia / Asunto</label><br>
-          <select id="evSubject" required style="width:100%;padding:8px;border-radius:6px;border:1px solid #cbd5e1;margin:8px 0;background:#fff;">
-            <option value="">-- selecciona o escribe --</option>
-          </select>
-          <input id="evSubjectFree" placeholder="O escribe una materia..." style="width:100%;padding:8px;border-radius:6px;border:1px solid #cbd5e1;margin:6px 0;background:#fff;">
-
-          <label for="evNote">Temas / Notas</label>
-          <textarea id="evNote" rows="4" style="width:100%;padding:8px;border-radius:6px;border:1px solid #cbd5e1;margin:8px 0;"></textarea>
-
-          <div style="display:flex;gap:8px;justify-content:flex-end;">
-            <button type="button" id="addEventBtn" style="background:var(--blue-600);color:#fff;border:0;padding:8px 10px;border-radius:6px;">Agregar</button>
-            <button type="button" id="delAllDayEvents" style="background:#ef4444;color:#fff;border:0;padding:8px 10px;border-radius:6px;">Borrar todos</button>
+          <label>Materia</label>
+          <select id="evSubject" style="width:100%;padding:8px;margin:6px 0"><option value="">-- seleccionar --</option></select>
+          <input id="evSubjectFree" placeholder="O escribe una materia..." style="width:100%;padding:8px;border-radius:6px;border:1px solid #cbd5e1" />
+          <label>Temas / Notas</label>
+          <textarea id="evNote" rows="4" style="width:100%;padding:8px;border-radius:6px;border:1px solid #cbd5e1"></textarea>
+          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+            <button id="addEventBtn" style="background:var(--blue-600);color:#fff;padding:8px 10px;border-radius:6px">Agregar</button>
+            <button id="delAllDayEvents" style="background:#ef4444;color:#fff;padding:8px 10px;border-radius:6px">Borrar todos</button>
           </div>
-        </form>
+        </div>
       </div>
+    </section>
+
+    <!-- POMODORO -->
+    <section id="pomodoro" class="tab" role="tabpanel" aria-labelledby="tab-pomodoro" tabindex="0">
+      <h2>Pomodoro & Técnicas por materia</h2>
+      <div class="pom-controls">
+        <label>Work <input id="workMins" type="number" value="25" min="1" style="width:80px" /></label>
+        <label>Break <input id="breakMins" type="number" value="5" min="1" style="width:80px" /></label>
+        <button id="pomStart" class="btn-ghost">Iniciar</button>
+        <button id="pomPause" class="btn-ghost">Pausa</button>
+        <button id="pomReset" class="btn-ghost">Reset</button>
+        <div style="margin-left:auto"><strong id="pomStatus">Work</strong></div>
+      </div>
+      <div style="font-size:36px;font-weight:800;text-align:center;margin-bottom:12px" id="pomTimer">25:00</div>
+
+      <h3>Temáticas / Técnicas por materia</h3>
+      <div style="display:flex;gap:8px;align-items:center">
+        <select id="techSubject" style="padding:8px;border-radius:6px;border:1px solid #cbd5e1">
+          <option value="">-- seleccionar materia --</option>
+        </select>
+        <button id="loadTopics" class="btn-ghost">Cargar temario</button>
+      </div>
+      <div id="techContent" class="temario-subj"></div>
+      <p class="nota">Aquí puedes ver el temario guardado por materia y añadir técnicas de estudio propias.</p>
     </section>
   </main>
 
-  <!-- Pomodoro widget -->
-  <div class="pomodoro" id="pomodoroWidget" aria-live="polite">
-    <div style="display:flex;justify-content:space-between;align-items:center;">
-      <strong>Pomodoro</strong>
-      <small class="nota" id="pomStatus">Work</small>
-    </div>
-    <div class="timer" id="pomTimer">25:00</div>
-    <div style="display:flex;gap:8px;justify-content:center;margin-bottom:8px;">
-      <input id="workMins" type="number" value="25" min="1" style="width:68px;padding:6px;border-radius:6px;border:1px solid #cbd5e1;text-align:center;">m work
-      <input id="breakMins" type="number" value="5" min="1" style="width:68px;padding:6px;border-radius:6px;border:1px solid #cbd5e1;text-align:center;">m break
-    </div>
-    <div class="controls">
-      <button id="pomStart" class="btn-ghost">Iniciar</button>
-      <button id="pomPause" class="btn-ghost">Pausa</button>
-      <button id="pomReset" class="btn-ghost">Reset</button>
+  <!-- Temario modal -->
+  <div id="temarioModal" class="temario-panel" role="dialog" aria-modal="true" style="display:none">
+    <button id="closeTemario" class="btn-ghost" style="float:right">Cerrar</button>
+    <h4 id="temarioTitle">Temario</h4>
+    <div id="temarioList" class="temario-list"></div>
+    <div style="display:flex;gap:8px">
+      <input id="temaInput" placeholder="Agregar tema..." style="flex:1;padding:8px;border-radius:6px;border:1px solid #cbd5e1" />
+      <button id="addTemaBtn" class="btn-ghost">Agregar</button>
     </div>
   </div>
 
-  <!-- Temario modal (hidden) -->
-  <div id="temarioModal" class="temario-panel" style="display:none;">
-    <button id="closeTemario" style="float:right;" class="btn-ghost">Cerrar</button>
-    <h4 id="temarioTitle">Temario</h4>
-    <div class="temario-list" id="temarioList"></div>
-    <div style="display:flex;gap:8px;margin-top:8px;">
-      <input id="temaInput" placeholder="Agregar tema..." style="flex:1;padding:8px;border-radius:6px;border:1px solid #cbd5e1;">
-      <button id="addTemaBtn" class="btn-ghost">Agregar</button>
+  <!-- Grades modal -->
+  <div id="gradesModal" class="grades-panel" role="dialog" aria-modal="true" style="display:none">
+    <button id="closeGrades" class="btn-ghost" style="float:right">Cerrar</button>
+    <h4>Calificaciones — todas las materias</h4>
+    <div id="gradesList" class="grades-list"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button id="saveGrades" class="btn-ghost">Guardar</button>
     </div>
   </div>
 
   <script>
   (function(){
-    /* ========= Helpers ========= */
+    /* ---------- Helpers ---------- */
+    const STORAGE_KEY = 'malla_full_v3';
+    const EVENTS_KEY = 'planner_events_v3';
     function uid(){ return 'id' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
-    function escapeHtml(str){ return String(str||'').replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+    function escapeHtml(s){ return String(s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
 
-    /* ========= TABS ========= */
+    /* ---------- Tabs ---------- */
     const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
     const panels = Array.from(document.querySelectorAll('[role="tabpanel"]'));
-    function mostrarTab(id, updateHash = true){
-      panels.forEach(p => p.classList.remove('activa'));
-      tabs.forEach(t => { t.setAttribute('aria-selected','false'); t.setAttribute('tabindex','-1'); });
-      const panel = document.getElementById(id);
-      const tab = tabs.find(t => t.getAttribute('aria-controls') === id);
-      if(panel && tab){
-        panel.classList.add('activa');
-        tab.setAttribute('aria-selected','true');
-        tab.setAttribute('tabindex','0');
-        tab.focus({preventScroll:true});
-        if(updateHash) history.replaceState(null, '', '#' + id);
-      }
-    }
-    tabs.forEach(t => {
-      t.addEventListener('click', () => mostrarTab(t.getAttribute('aria-controls')));
-      t.addEventListener('keydown', (e) => {
-        const idx = tabs.indexOf(t);
-        let newIdx = null;
-        if(e.key === 'ArrowRight') newIdx = (idx + 1) % tabs.length;
-        else if(e.key === 'ArrowLeft') newIdx = (idx - 1 + tabs.length) % tabs.length;
-        else if(e.key === 'Home') newIdx = 0;
-        else if(e.key === 'End') newIdx = tabs.length - 1;
-        if(newIdx !== null){ e.preventDefault(); tabs[newIdx].focus(); }
-      });
-      t.addEventListener('keyup', (e) => { if(e.key === 'Enter' || e.key === ' ') mostrarTab(t.getAttribute('aria-controls')); });
-    });
-    function initFromHash(){ const hash = location.hash.replace('#',''); const valid = panels.some(p => p.id === hash); if(valid) mostrarTab(hash, false); else mostrarTab('malla', false); }
-    window.addEventListener('hashchange', () => { const id = location.hash.replace('#',''); if(id) mostrarTab(id, false); });
+    function mostrarTab(id, updateHash=true){ panels.forEach(p=>p.classList.remove('activa')); tabs.forEach(t=>{t.setAttribute('aria-selected','false');t.setAttribute('tabindex','-1')}); const p=document.getElementById(id); const t=tabs.find(x=>x.getAttribute('aria-controls')===id); if(p&&t){ p.classList.add('activa'); t.setAttribute('aria-selected','true'); t.setAttribute('tabindex','0'); t.focus({preventScroll:true}); if(updateHash) history.replaceState(null,'','#'+id);} }
+    tabs.forEach(t=>{ t.addEventListener('click', ()=>mostrarTab(t.getAttribute('aria-controls'))); t.addEventListener('keydown',(e)=>{ const idx=tabs.indexOf(t); let ni=null; if(e.key==='ArrowRight') ni=(idx+1)%tabs.length; else if(e.key==='ArrowLeft') ni=(idx-1+tabs.length)%tabs.length; else if(e.key==='Home') ni=0; else if(e.key==='End') ni=tabs.length-1; if(ni!==null){ e.preventDefault(); tabs[ni].focus(); } }); t.addEventListener('keyup',(e)=>{ if(e.key==='Enter' || e.key===' ') mostrarTab(t.getAttribute('aria-controls')) });});
+    function initFromHash(){ const h=location.hash.replace('#',''); if(panels.some(p=>p.id===h)) mostrarTab(h,false); else mostrarTab('malla',false); }
+    window.addEventListener('hashchange', ()=>{ const id=location.hash.replace('#',''); if(id) mostrarTab(id,false); });
 
-    /* ========= WIKIPEDIA / CHAT ASSISTANT ========= */
-    const input = document.getElementById('buscarTermino');
-    const btn = document.getElementById('btnBuscar');
-    const sugerenciasEl = document.getElementById('sugerencias');
-    const resultadoEl = document.getElementById('resultado');
-
-    async function buscarSugerencias(q){
-      sugerenciasEl.innerHTML = '';
-      if(!q || q.trim().length < 2) return;
-      try{
-        const url = 'https://es.wikipedia.org/w/api.php?action=opensearch&format=json&limit=6&origin=*&search=' + encodeURIComponent(q);
-        const res = await fetch(url);
-        if(!res.ok) throw new Error('Error en búsqueda');
-        const data = await res.json();
-        const titulos = data[1] || [];
-        titulos.forEach(t => {
-          const b = document.createElement('button');
-          b.type = 'button'; b.className = 'sugerencia'; b.textContent = t;
-          b.addEventListener('click', () => getResumen(t));
-          sugerenciasEl.appendChild(b);
-        });
-      }catch(err){ console.warn('Sugerencias error:', err); }
-    }
-
-    async function getResumen(title){
-      resultadoEl.innerHTML = '<p class="nota">Cargando...</p>';
-      try{
-        const url = 'https://es.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(title);
-        const res = await fetch(url);
-        if(res.status === 404){ resultadoEl.innerHTML = '<p class="nota">No se encontró el término en Wikipedia.</p>'; return; }
-        if(!res.ok) throw new Error('Error al obtener resumen');
-        const data = await res.json();
-        const html = [];
-        html.push('<h3>' + escapeHtml(data.title || title) + '</h3>');
-        if(data.thumbnail && data.thumbnail.source) html.push('<img src="' + escapeHtml(data.thumbnail.source) + '" alt="' + escapeHtml(data.title || '') + '">');
-        if(data.extract_html) html.push('<div>' + data.extract_html + '</div>');
-        else if(data.extract) html.push('<p>' + escapeHtml(data.extract) + '</p>');
-        else html.push('<p class="nota">No hay resumen disponible.</p>');
-        if(data.content_urls && data.content_urls.desktop && data.content_urls.desktop.page) html.push('<p class="nota"><a href="' + escapeHtml(data.content_urls.desktop.page) + '" target="_blank" rel="noopener">Leer en Wikipedia</a></p>');
-        resultadoEl.innerHTML = html.join('');
-      }catch(err){ resultadoEl.innerHTML = '<p class="nota">Error al buscar. Intenta de nuevo.</p>'; console.error('getResumen error:', err); }
-    }
-
-    btn.addEventListener('click', () => {
-      const q = input.value.trim();
-      if(!q) return;
-      buscarSugerencias(q).then(() => {
-        const first = sugerenciasEl.querySelector('.sugerencia');
-        if(first) getResumen(first.textContent);
-        else getResumen(q);
-      });
-    });
-    let timer = null;
-    input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(() => buscarSugerencias(input.value.trim()), 350); });
-    input.addEventListener('keyup', (e) => { if(e.key === 'Enter') btn.click(); });
-
-    // Conversational assistant (simple, free): performs opensearch & summary on query and synthesizes into a reply
-    const chatInput = document.getElementById('chatInput');
-    const chatSend = document.getElementById('chatSend');
-    const chatHistory = document.getElementById('chatHistory');
-    const chatClear = document.getElementById('chatClear');
-
-    async function assistantReply(query){
-      // show user message
-      appendChatMsg('user', query);
-      appendChatMsg('assistant', 'Buscando información relevante en Wikipedia...');
-      try{
-        // get suggestions
-        const sUrl = 'https://es.wikipedia.org/w/api.php?action=opensearch&format=json&limit=4&origin=*&search=' + encodeURIComponent(query);
-        const sRes = await fetch(sUrl);
-        const sData = await sRes.json();
-        const titles = sData[1] || [];
-        if(titles.length === 0){
-          updateLastAssistant('No encontré resultados claros en Wikipedia. Intenta con otra palabra clave.');
-          return;
-        }
-        // fetch summaries in parallel (up to 3)
-        const top = titles.slice(0,3);
-        const summaries = await Promise.all(top.map(async t => {
-          try{
-            const url = 'https://es.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(t);
-            const r = await fetch(url);
-            if(!r.ok) return null;
-            return await r.json();
-          }catch(e){ return null; }
-        }));
-        // build reply: present combined extract snippets
-        let reply = '';
-        summaries.forEach(s => {
-          if(!s) return;
-          reply += `<strong>${s.title}</strong>\n` + (s.extract ? s.extract + '\n\n' : '');
-        });
-        reply += 'Fuentes: ' + top.map(t => `"${t}"`).join(', ') + '.';
-        updateLastAssistantHtml(reply);
-      }catch(err){
-        updateLastAssistant('Error buscando información. Intenta de nuevo.');
-        console.error(err);
-      }
-    }
-
-    function appendChatMsg(kind, text){
-      const el = document.createElement('div');
-      if(kind === 'assistant'){
-        el.style.background = '#fff';
-        el.style.border = '1px solid #e6eefc';
-        el.style.padding = '8px';
-        el.style.borderRadius = '6px';
-        el.style.marginBottom = '8px';
-        el.innerHTML = '<strong>Asistente:</strong><div style="margin-top:6px">' + escapeHtml(text).replace(/\n/g,'<br>') + '</div>';
-      } else {
-        el.style.textAlign = 'right';
-        el.style.marginBottom = '8px';
-        el.innerHTML = '<div style="display:inline-block;background:#eef2ff;padding:8px;border-radius:8px;"><strong>Tú:</strong><div style="margin-top:6px">' + escapeHtml(text) + '</div></div>';
-      }
-      chatHistory.appendChild(el);
-      chatHistory.scrollTop = chatHistory.scrollHeight;
-    }
-    function updateLastAssistant(text){
-      // replace last assistant message content
-      const nodes = Array.from(chatHistory.children).reverse();
-      const last = nodes.find(n => n.innerHTML.includes('Asistente:'));
-      if(last){
-        last.innerHTML = '<strong>Asistente:</strong><div style="margin-top:6px">' + escapeHtml(text).replace(/\n/g,'<br>') + '</div>';
-      }
-    }
-    function updateLastAssistantHtml(html){
-      const nodes = Array.from(chatHistory.children).reverse();
-      const last = nodes.find(n => n.innerHTML.includes('Asistente:'));
-      if(last){
-        last.innerHTML = '<strong>Asistente:</strong><div style="margin-top:6px">' + html.replace(/\n/g,'<br>') + '</div>';
-      }
-    }
-
-    chatSend.addEventListener('click', () => {
-      const q = chatInput.value.trim();
-      if(!q) return;
-      assistantReply(q);
-      chatInput.value = '';
-    });
-    chatInput.addEventListener('keyup', (e) => { if(e.key === 'Enter') chatSend.click(); });
-    chatClear.addEventListener('click', () => { chatHistory.innerHTML = ''; });
-
-    /* ========= MALLA ========= */
-    const STORAGE_KEY = 'mallaData_v2';
-    const defaultYears = ['CBC',1,2,3,4,5,6];
-    // default subjects (from your list)
+    /* ---------- Data: malla + events ---------- */
     const defaultSubjects = [
-      { name: 'Química', year: 'CBC' },
-      { name: 'Biofísica', year: 'CBC' },
-      { name: 'Biología', year: 'CBC' },
-      { name: 'IPC', year: 'CBC' },
-      { name: 'ICSE', year: 'CBC' },
-      { name: 'Matemática', year: 'CBC' },
-
-      { name: 'Anatomía', year: 1 },
-      { name: 'Histología', year: 1 },
-      { name: 'Embriología', year: 1 },
-      { name: 'Genética', year: 1 },
-
-      { name: 'Bioquímica', year: 2 },
-      { name: 'Inmunología', year: 2 },
-      { name: 'Microbiología', year: 2 },
-      { name: 'Fisiología', year: 2 },
-
-      { name: 'Salud Mental', year: 3 },
-      { name: 'Bioética', year: 3 },
-      { name: 'Salud Pública', year: 3 },
-      { name: 'Inglés Médico', year: 3 },
-
-      { name: 'Patología', year: 3 },
-      { name: 'Semiología', year: 3 },
-      { name: 'Farmacología I', year: 3 },
-      { name: 'Farmacología II', year: 3 },
-      { name: 'Medicina Legal', year: 3 },
-      { name: 'Toxicología', year: 3 },
-
-      { name: 'Medicina Interna', year: 4 },
-      { name: 'Nutrición', year: 4 },
-      { name: 'Diagnóstico por imágenes', year: 4 },
-      { name: 'Dermatología', year: 4 },
-      { name: 'Infectología', year: 4 },
-      { name: 'Neumonología', year: 4 },
-      { name: 'Neurología', year: 4 },
-      { name: 'Psiquiatría', year: 4 },
-
-      { name: 'Neurocirugía', year: 5 },
-      { name: 'Pediatría', year: 5 },
-      { name: 'Obstetricia', year: 5 },
-      { name: 'Ginecología', year: 5 },
-      { name: 'Cirugía General', year: 5 },
-      { name: 'Urología', year: 5 },
-      { name: 'Traumatología', year: 5 },
-      { name: 'Oftalmología', year: 6 },
-      { name: 'Otorrinolaringología', year: 6 }
+      // CBC
+      'Química','Biofísica','Biología','IPC','ICSE','Matemática',
+      // Año1
+      'Anatomía','Histología','Embriología','Genética',
+      // Año2
+      'Bioquímica','Inmunología','Microbiología','Fisiología',
+      // Transversales / Año3 default
+      'Salud Mental','Bioética','Salud Pública','Inglés Médico',
+      // Clinicas / Año3
+      'Patología','Semiología','Farmacología I','Farmacología II','Medicina Legal','Toxicología',
+      // Clinicas avanzadas
+      'Medicina Interna','Nutrición','Diagnóstico por imágenes','Dermatología','Infectología','Neumonología','Neurología','Psiquiatría',
+      'Neurocirugía','Pediatría','Obstetricia','Ginecología','Cirugía General','Urología','Traumatología','Oftalmología','Otorrinolaringología'
     ];
-
-    // load/save
-    function loadMalla(){
-      try{ const raw = localStorage.getItem(STORAGE_KEY); if(!raw) return null; return JSON.parse(raw); }catch(e){ return null;}
-    }
+    // load/save malla
+    function loadMalla(){ try{ const raw=localStorage.getItem(STORAGE_KEY); return raw?JSON.parse(raw):null }catch(e){return null} }
     function saveMalla(data){ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
 
+    // initialize malla if empty
+    let malla = loadMalla();
+    if(!malla || !Array.isArray(malla.materias) || malla.materias.length===0){
+      // simple heuristic to assign years (some known, rest 3)
+      const mapYear = new Map([
+        ['Química','CBC'],['Biofísica','CBC'],['Biología','CBC'],['IPC','CBC'],['ICSE','CBC'],['Matemática','CBC'],
+        ['Anatomía',1],['Histología',1],['Embriología',1],['Genética',1],
+        ['Bioquímica',2],['Inmunología',2],['Microbiología',2],['Fisiología',2],
+        ['Salud Mental',3],['Bioética',3],['Salud Pública',3],['Inglés Médico',3],
+        ['Patología',3],['Semiología',3],['Farmacología I',3],['Farmacología II',3],['Medicina Legal',3],['Toxicología',3],
+        ['Medicina Interna',4],['Nutrición',4],['Diagnóstico por imágenes',4],['Dermatología',4],['Infectología',4],['Neumonología',4],['Neurología',4],['Psiquiatría',4],
+        ['Neurocirugía',5],['Pediatría',5],['Obstetricia',5],['Ginecología',5],['Cirugía General',5],['Urología',5],['Traumatología',5],['Oftalmología',6],['Otorrinolaringología',6]
+      ]);
+      malla = { materias: defaultSubjects.map(name => ({ id: uid(), name, year: mapYear.get(name)??3, p1:null, p2:null, topics:[], techniques:[] })) };
+      saveMalla(malla);
+    }
+
+    /* ---------- Render Malla (with Temario + Delete blue) ---------- */
     const mallaYearsEl = document.getElementById('mallaYears');
     const materiaNombre = document.getElementById('materiaNombre');
     const materiaYear = document.getElementById('materiaYear');
@@ -508,104 +282,91 @@
     const btnExport = document.getElementById('btnExport');
     const btnImport = document.getElementById('btnImport');
     const fileImport = document.getElementById('fileImport');
+    const btnVerCalificaciones = document.getElementById('btnVerCalificaciones');
 
-    let malla = loadMalla();
-    if(!malla || !Array.isArray(malla.materias) || malla.materias.length === 0){
-      malla = { materias: defaultSubjects.map(s => ({ id: uid(), name: s.name, year: s.year, p1: null, p2: null, topics: [] })) };
-      saveMalla(malla);
+    const YEARS = ['CBC',1,2,3,4,5,6];
+
+    function calcAvg(p1,p2){
+      const a = (p1===null||p1===undefined||p1==='')?null:Number(p1);
+      const b = (p2===null||p2===undefined||p2==='')?null:Number(p2);
+      if(a===null && b===null) return '--';
+      if(a===null) return b.toFixed(1);
+      if(b===null) return a.toFixed(1);
+      return ((a+b)/2).toFixed(1);
     }
 
     function renderMalla(){
       mallaYearsEl.innerHTML = '';
-      defaultYears.forEach(year => {
-        const box = document.createElement('div'); box.className='year-box'; box.setAttribute('data-year', year);
-        const title = (year === 'CBC') ? 'CBC' : ('Año ' + year);
-        box.innerHTML = '<h3>' + title + '</h3><div class="materias-list"></div>';
+      YEARS.forEach(y=>{
+        const box=document.createElement('div');box.className='year-box';box.dataset.year=y;
+        box.innerHTML = `<h3>${y==='CBC'?'CBC':'Año '+y}</h3><div class="materias-list"></div>`;
         const list = box.querySelector('.materias-list');
-
-        const materiasDelYear = malla.materias.filter(m => (typeof year === 'number') ? Number(m.year) === year : m.year === year);
-        if(materiasDelYear.length === 0){
-          const empty = document.createElement('p'); empty.className='nota'; empty.textContent='No hay materias en este año.'; list.appendChild(empty);
-        } else {
-          materiasDelYear.forEach(m => {
-            const row = document.createElement('div'); row.className='materia';
-            row.innerHTML = `
-              <div class="name" title="${escapeHtml(m.name)}">${escapeHtml(m.name)}</div>
-              <input type="number" min="0" max="10" step="0.1" value="${m.p1 ?? ''}" data-id="${m.id}" data-field="p1" aria-label="Parcial 1 ${escapeHtml(m.name)}">
-              <input type="number" min="0" max="10" step="0.1" value="${m.p2 ?? ''}" data-id="${m.id}" data-field="p2" aria-label="Parcial 2 ${escapeHtml(m.name)}">
-              <div class="avg">${calcAvg(m.p1, m.p2)}</div>
-              <button class="ter" data-action="temario" data-id="${m.id}" title="Ver/Editar temario">Temario</button>
-              <button class="small" data-action="delete" data-id="${m.id}" title="Eliminar materia">Eliminar</button>
-            `;
-            list.appendChild(row);
-          });
-        }
+        const materias = malla.materias.filter(m => (typeof y==='number') ? Number(m.year)===y : m.year===y);
+        if(materias.length===0){ const p=document.createElement('p');p.className='nota';p.textContent='No hay materias en este año.';list.appendChild(p); }
+        else materias.forEach(m=>{
+          const row=document.createElement('div');row.className='materia';
+          row.innerHTML = `<div class="name" title="${escapeHtml(m.name)}">${escapeHtml(m.name)}</div>
+            <input type="number" min="0" max="10" step="0.1" value="${m.p1??''}" data-id="${m.id}" data-field="p1" aria-label="P1 ${escapeHtml(m.name)}">
+            <input type="number" min="0" max="10" step="0.1" value="${m.p2??''}" data-id="${m.id}" data-field="p2" aria-label="P2 ${escapeHtml(m.name)}">
+            <div class="avg">${calcAvg(m.p1,m.p2)}</div>
+            <button class="ter" data-action="temario" data-id="${m.id}">Temario</button>
+            <button class="small" data-action="delete" data-id="${m.id}">Eliminar</button>`;
+          list.appendChild(row);
+        });
         mallaYearsEl.appendChild(box);
       });
 
-      // listeners
-      mallaYearsEl.querySelectorAll('input[type="number"]').forEach(inp => {
-        inp.addEventListener('change', () => {
-          const id = inp.dataset.id; const field = inp.dataset.field; const val = inp.value === '' ? null : Number(inp.value);
-          const mat = malla.materias.find(x => x.id === id);
-          if(mat){ mat[field] = val; saveMalla(malla); renderMalla(); }
+      // listeners for inputs
+      mallaYearsEl.querySelectorAll('input[type="number"]').forEach(inp=>{
+        inp.addEventListener('change',()=>{
+          const id=inp.dataset.id, field=inp.dataset.field, val = inp.value===''?null:Number(inp.value);
+          const mat = malla.materias.find(x=>x.id===id);
+          if(mat){ mat[field]=val; saveMalla(malla); renderMalla(); }
         });
       });
-      mallaYearsEl.querySelectorAll('button[data-action="delete"]').forEach(b => {
-        b.addEventListener('click', () => {
-          const id = b.dataset.id;
-          if(!confirm('Eliminar materia?')) return;
-          malla.materias = malla.materias.filter(x => x.id !== id); saveMalla(malla); renderMalla();
+      // delete
+      mallaYearsEl.querySelectorAll('button[data-action="delete"]').forEach(b=>{
+        b.addEventListener('click',()=>{
+          const id=b.dataset.id; if(!confirm('Eliminar materia?')) return;
+          malla.materias = malla.materias.filter(x=>x.id!==id); saveMalla(malla); renderMalla();
         });
       });
-      mallaYearsEl.querySelectorAll('button[data-action="temario"]').forEach(b => {
-        b.addEventListener('click', () => openTemario(b.dataset.id));
+      // temario
+      mallaYearsEl.querySelectorAll('button[data-action="temario"]').forEach(b=>{
+        b.addEventListener('click',()=> openTemario(b.dataset.id));
       });
 
+      // refresh selects
       refreshSubjectOptions();
+      populateTechSubjectSelect();
     }
 
-    function calcAvg(p1,p2){
-      const a = (p1 === null || p1 === undefined || p1 === '') ? null : Number(p1);
-      const b = (p2 === null || p2 === undefined || p2 === '') ? null : Number(p2);
-      if(a === null && b === null) return '--';
-      if(a === null) return (b).toFixed(1);
-      if(b === null) return (a).toFixed(1);
-      return ((a + b) / 2).toFixed(1);
-    }
-
-    btnAgregarMateria.addEventListener('click', () => {
-      const name = materiaNombre.value.trim(); const yearVal = materiaYear.value; const year = (yearVal === 'CBC') ? 'CBC' : Number(yearVal);
-      if(!name){ alert('Escribe el nombre de la materia.'); return; }
-      const nueva = { id: uid(), name, year: year, p1: null, p2: null, topics: [] };
-      malla.materias.push(nueva); saveMalla(malla); materiaNombre.value=''; materiaYear.value='1'; renderMalla();
+    btnAgregarMateria.addEventListener('click',()=>{
+      const name = materiaNombre.value.trim(); const y = materiaYear.value; const year = y==='CBC'?'CBC':Number(y);
+      if(!name){ alert('Escribe nombre'); return; }
+      malla.materias.push({ id:uid(), name, year, p1:null, p2:null, topics:[], techniques:[] });
+      saveMalla(malla); materiaNombre.value=''; materiaYear.value='1'; renderMalla();
     });
-
-    btnExport.addEventListener('click', () => {
-      const dataStr = JSON.stringify(malla, null, 2); const blob = new Blob([dataStr], {type:'application/json'}); const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = 'malla-export.json'; a.click(); URL.revokeObjectURL(url);
+    btnExport.addEventListener('click',()=>{
+      const blob = new Blob([JSON.stringify(malla,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');a.href=url;a.download='malla-export.json';a.click();URL.revokeObjectURL(url);
     });
-
-    btnImport.addEventListener('click', () => fileImport.click());
-    fileImport.addEventListener('change', (e) => {
-      const f = e.target.files[0]; if(!f) return;
-      const reader = new FileReader();
-      reader.onload = (ev) => {
+    btnImport.addEventListener('click',()=>fileImport.click());
+    fileImport.addEventListener('change', (e)=>{
+      const f=e.target.files[0]; if(!f) return;
+      const r=new FileReader(); r.onload=ev=>{
         try{
-          const data = JSON.parse(ev.target.result);
-          if(!data || !Array.isArray(data.materias)) throw new Error('Formato inválido');
-          malla = data; saveMalla(malla); renderMalla(); alert('Importación completa.');
-        }catch(err){ alert('Error importando JSON: ' + err.message); }
-      };
-      reader.readAsText(f);
+          const data=JSON.parse(ev.target.result);
+          if(!data||!Array.isArray(data.materias)) throw new Error('Formato inválido');
+          malla=data; saveMalla(malla); renderMalla(); alert('Importado');
+        }catch(err){ alert('Error: '+err.message); }
+      }; r.readAsText(f);
     });
 
-    renderMalla();
-
-    /* ========= TEMARIO POR MATERIA ========= */
+    /* ---------- Temario modal ---------- */
     const temarioModal = document.getElementById('temarioModal');
-    const temarioList = document.getElementById('temarioList');
     const temarioTitle = document.getElementById('temarioTitle');
+    const temarioList = document.getElementById('temarioList');
     const temaInput = document.getElementById('temaInput');
     const addTemaBtn = document.getElementById('addTemaBtn');
     const closeTemario = document.getElementById('closeTemario');
@@ -613,50 +374,68 @@
 
     function openTemario(id){
       activeTemarioId = id;
-      const mat = malla.materias.find(m => m.id === id);
+      const mat = malla.materias.find(m=>m.id===id);
       if(!mat) return;
-      temarioTitle.textContent = 'Temario — ' + mat.name;
-      renderTemarioList(mat);
-      temarioModal.style.display = 'block';
+      temarioTitle.textContent = 'Temario — '+mat.name;
+      renderTemario(mat);
+      temarioModal.style.display='block';
     }
-    function renderTemarioList(mat){
-      temarioList.innerHTML = '';
-      if(!mat.topics || mat.topics.length === 0){
-        temarioList.innerHTML = '<p class="nota">Aún no hay temas. Agrégalos abajo.</p>';
-        return;
-      }
-      mat.topics.forEach((t,i) => {
-        const el = document.createElement('div'); el.style.display='flex'; el.style.justifyContent='space-between'; el.style.alignItems='center';
+    function renderTemario(mat){
+      temarioList.innerHTML='';
+      if(!mat.topics||mat.topics.length===0){ temarioList.innerHTML='<p class="nota">Aún no hay temas.</p>'; return; }
+      mat.topics.forEach((t,i)=>{
+        const el=document.createElement('div'); el.style.display='flex'; el.style.justifyContent='space-between'; el.style.alignItems='center';
         el.innerHTML = `<div>${escapeHtml(t)}</div><div><button data-i="${i}" class="btn-ghost">Eliminar</button></div>`;
         temarioList.appendChild(el);
       });
-      temarioList.querySelectorAll('button[data-i]').forEach(b => {
-        b.addEventListener('click', () => {
-          const i = Number(b.dataset.i);
-          mat.topics.splice(i,1); saveMalla(malla); renderTemarioList(mat); renderMalla();
+      temarioList.querySelectorAll('button[data-i]').forEach(b=>{
+        b.addEventListener('click',()=>{
+          const i=Number(b.dataset.i);
+          mat.topics.splice(i,1); saveMalla(malla); renderTemario(mat); renderMalla();
         });
       });
     }
-    addTemaBtn.addEventListener('click', () => {
-      const val = temaInput.value.trim();
-      if(!val) return;
-      const mat = malla.materias.find(m => m.id === activeTemarioId);
-      if(!mat) return;
-      mat.topics = mat.topics || [];
-      mat.topics.push(val);
-      saveMalla(malla);
-      temaInput.value = '';
-      renderTemarioList(mat);
-      renderMalla();
+    addTemaBtn.addEventListener('click',()=>{
+      const v = temaInput.value.trim(); if(!v) return;
+      const mat = malla.materias.find(m=>m.id===activeTemarioId); if(!mat) return;
+      mat.topics = mat.topics||[]; mat.topics.push(v); saveMalla(malla); temaInput.value=''; renderTemario(mat); renderMalla();
     });
-    closeTemario.addEventListener('click', () => { temarioModal.style.display='none'; activeTemarioId=null; });
+    closeTemario.addEventListener('click', ()=>{ temarioModal.style.display='none'; activeTemarioId=null; });
 
-    /* ========= CALENDARIO ========= */
-    const EVENTS_KEY = 'planner_events_v3';
+    /* ---------- Grades modal (all grades in Malla) ---------- */
+    const gradesModal = document.getElementById('gradesModal');
+    const gradesList = document.getElementById('gradesList');
+    const closeGrades = document.getElementById('closeGrades');
+    const saveGrades = document.getElementById('saveGrades');
+
+    btnVerCalificaciones.addEventListener('click', ()=> openGrades());
+    function openGrades(){
+      gradesList.innerHTML = '';
+      malla.materias.forEach(m=>{
+        const el=document.createElement('div'); el.style.display='flex'; el.style.alignItems='center'; el.style.gap='8px';
+        el.innerHTML = `<div style="flex:1">${escapeHtml(m.name)}</div>
+          <input type="number" min="0" max="10" step="0.1" value="${m.p1??''}" data-id="${m.id}" data-field="p1" style="width:88px;padding:6px;border-radius:6px;border:1px solid #e2e8f0" />
+          <input type="number" min="0" max="10" step="0.1" value="${m.p2??''}" data-id="${m.id}" data-field="p2" style="width:88px;padding:6px;border-radius:6px;border:1px solid #e2e8f0" />
+          <div style="width:72px;text-align:center">${calcAvg(m.p1,m.p2)}</div>`;
+        gradesList.appendChild(el);
+      });
+      gradesModal.style.display='block';
+    }
+    closeGrades.addEventListener('click', ()=> gradesModal.style.display='none');
+    saveGrades.addEventListener('click', ()=>{
+      gradesList.querySelectorAll('input[type="number"]').forEach(inp=>{
+        const id=inp.dataset.id, f=inp.dataset.field, v=inp.value===''?null:Number(inp.value);
+        const m = malla.materias.find(x=>x.id===id);
+        if(m) m[f]=v;
+      });
+      saveMalla(malla); renderMalla(); gradesModal.style.display='none';
+    });
+
+    /* ---------- Calendar monthly (fixed) ---------- */
     const calendarGrid = document.getElementById('calendarGrid');
     const monthTitle = document.getElementById('monthTitle');
-    const prevMonth = document.getElementById('prevMonth');
-    const nextMonth = document.getElementById('nextMonth');
+    const prevMonthNav = document.getElementById('prevMonthNav');
+    const nextMonthNav = document.getElementById('nextMonthNav');
     const todayBtn = document.getElementById('todayBtn');
     const dayPanel = document.getElementById('dayPanel');
     const dayPanelTitle = document.getElementById('dayPanelTitle');
@@ -667,135 +446,143 @@
     const evNote = document.getElementById('evNote');
     const addEventBtn = document.getElementById('addEventBtn');
     const delAllDayEvents = document.getElementById('delAllDayEvents');
-    const closeDayPanel = document.getElementById('closeDayPanel');
+    const closeDayPanelBtn = document.getElementById('closeDayPanel');
     const btnExportEvents = document.getElementById('btnExportEvents');
 
-    let events = (function(){ try{ const raw = localStorage.getItem(EVENTS_KEY); return raw ? JSON.parse(raw) : []; }catch(e){ return []; } })();
-    let current = new Date(); // month current
-    let selectedDateStr = null;
+    let events = (function(){ try{ const raw = localStorage.getItem(EVENTS_KEY); return raw?JSON.parse(raw):[] }catch(e){return[]} })();
+    let current = new Date(), selectedDate = null;
 
     function saveEvents(arr){ localStorage.setItem(EVENTS_KEY, JSON.stringify(arr)); }
-
-    function refreshSubjectOptions(){
-      if(!evSubject) return;
-      const currentVal = evSubject.value || '';
-      evSubject.innerHTML = '<option value="">-- selecciona o escribe --</option>';
-      const names = Array.from(new Set((malla.materias || []).map(m => m.name))).sort();
-      names.forEach(n => { const o = document.createElement('option'); o.value = n; o.textContent = n; evSubject.appendChild(o); });
-      if(currentVal) evSubject.value = currentVal;
-    }
+    function refreshSubjectOptions(){ evSubject.innerHTML = '<option value="">-- seleccionar --</option>'; malla.materias.map(m=>m.name).filter((v,i,a)=>a.indexOf(v)===i).sort().forEach(n=>{ const o=document.createElement('option');o.value=n;o.textContent=n;evSubject.appendChild(o); }); }
+    function toISO(d){ const yy=d.getFullYear(); const mm=String(d.getMonth()+1).padStart(2,'0'); const dd=String(d.getDate()).padStart(2,'0'); return `${yy}-${mm}-${dd}`; }
+    function isSameDay(a,b){ return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate(); }
 
     function renderMonth(date){
-      calendarGrid.innerHTML = '';
-      const year = date.getFullYear(), month = date.getMonth();
-      const first = new Date(year, month, 1);
-      const last = new Date(year, month + 1, 0);
-      const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+      calendarGrid.innerHTML=''; const year=date.getFullYear(), month=date.getMonth();
+      const first=new Date(year,month,1), last=new Date(year,month+1,0);
+      const monthNames=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
       monthTitle.textContent = monthNames[month] + ' ' + year;
-      const firstWeekday = (first.getDay() + 6) % 7;
-      for(let i=0;i<firstWeekday;i++){ const blank = document.createElement('div'); blank.className='cal-day'; blank.style.background='transparent'; blank.style.border='0'; calendarGrid.appendChild(blank); }
-      for(let d=1; d<=last.getDate(); d++){
-        const dt = new Date(year, month, d);
-        const dayStr = toISODate(dt);
-        const dayEl = document.createElement('div'); dayEl.className='cal-day'; dayEl.tabIndex = 0;
-        dayEl.innerHTML = `<div class="date-num">${d}</div><div class="events-dot" aria-hidden="true"></div>`;
+      const firstWeekday = (first.getDay()+6)%7;
+      for(let i=0;i<firstWeekday;i++){ const blank=document.createElement('div'); blank.className='cal-day'; blank.style.background='transparent'; blank.style.border='0'; calendarGrid.appendChild(blank); }
+      for(let d=1;d<=last.getDate();d++){
+        const dt=new Date(year,month,d); const dayStr = toISO(dt);
+        const dayEl=document.createElement('div'); dayEl.className='cal-day'; dayEl.tabIndex=0;
+        dayEl.innerHTML = `<div class="date-num">${d}</div><div class="events-dot"></div>`;
         const dots = dayEl.querySelector('.events-dot');
-        const evs = events.filter(e => e.date === dayStr);
-        evs.slice(0,5).forEach(e => {
-          const dot = document.createElement('span'); dot.className='event-dot' + (e.type === 'parcial' ? ' parcial' : '');
-          dots.appendChild(dot);
-        });
-        const now = new Date();
-        if(isSameDay(now, dt)) dayEl.style.boxShadow = 'inset 0 0 0 2px rgba(37,99,235,0.12)';
-        dayEl.addEventListener('click', () => openDayPanel(dayStr));
-        dayEl.addEventListener('keydown', (e) => { if(e.key==='Enter' || e.key===' ') openDayPanel(dayStr); });
+        const evs = events.filter(e=>e.date===dayStr);
+        evs.slice(0,5).forEach(e=>{ const dot=document.createElement('span'); dot.className='event-dot'+(e.type==='parcial'?' parcial':''); dots.appendChild(dot); });
+        if(isSameDay(dt,new Date())) dayEl.style.boxShadow='inset 0 0 0 2px rgba(37,99,235,0.12)';
+        dayEl.addEventListener('click',()=> openDayPanel(dayStr));
+        dayEl.addEventListener('keydown',(e)=>{ if(e.key==='Enter' || e.key===' ') openDayPanel(dayStr); });
         calendarGrid.appendChild(dayEl);
       }
     }
 
-    function toISODate(d){ const yy = d.getFullYear(); const mm = String(d.getMonth()+1).padStart(2,'0'); const dd = String(d.getDate()).padStart(2,'0'); return `${yy}-${mm}-${dd}`; }
-    function isSameDay(a,b){ return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate(); }
-
     function openDayPanel(dateStr){
-      selectedDateStr = dateStr;
-      dayPanelTitle.textContent = formatDateReadable(dateStr);
-      renderDayEvents();
-      refreshSubjectOptions();
-      evSubject.value = '';
-      evSubjectFree.value = '';
-      evNote.value = '';
-      evType.value = 'estudio';
-      dayPanel.style.display = 'block';
-      dayPanel.focus();
+      selectedDate = dateStr; dayPanelTitle.textContent = dateStr.split('-').reverse().join('/');
+      renderDayEvents(); refreshSubjectOptions(); evSubject.value=''; evSubjectFree.value=''; evNote.value=''; evType.value='estudio'; dayPanel.style.display='block';
     }
-
-    function formatDateReadable(iso){ const [y,m,d] = iso.split('-'); return `${d}/${m}/${y}`; }
-
     function renderDayEvents(){
-      dayEvents.innerHTML = '';
-      const dayEvs = events.filter(e => e.date === selectedDateStr);
-      if(dayEvs.length === 0){ dayEvents.innerHTML = '<p class="nota">No hay eventos en este día.</p>'; return; }
-      dayEvs.forEach(ev => {
-        const el = document.createElement('div'); el.className='ev';
-        el.innerHTML = `<strong>${escapeHtml(ev.subject)} ${ev.type === 'parcial' ? ' — <em>Parcial</em>' : ''}</strong>
-          <div style="font-size:13px;color:${ev.note? '#334155':'#64748b'};margin-top:6px;">${escapeHtml(ev.note || '(sin temas)')}</div>`;
-        const del = document.createElement('button'); del.textContent='Eliminar'; del.className='btn-ghost';
-        del.style.marginTop='8px'; del.addEventListener('click', () => {
-          if(!confirm('Eliminar evento?')) return;
-          events = events.filter(x => x.id !== ev.id); saveEvents(events); renderDayEvents(); renderMonth(current);
-        });
-        el.appendChild(del);
-        dayEvents.appendChild(el);
+      dayEvents.innerHTML=''; const dayEvs = events.filter(e=>e.date===selectedDate);
+      if(dayEvs.length===0){ dayEvents.innerHTML='<p class="nota">No hay eventos en este día.</p>'; return; }
+      dayEvs.forEach(ev=>{
+        const el=document.createElement('div'); el.className='ev';
+        el.innerHTML = `<strong>${escapeHtml(ev.subject)}${ev.type==='parcial'?' — <em>Parcial</em>':''}</strong>
+        <div style="font-size:13px;margin-top:6px;color:${ev.note?'#334155':'#64748b'}">${escapeHtml(ev.note||'(sin temas)')}</div>`;
+        const del=document.createElement('button'); del.className='btn-ghost'; del.textContent='Eliminar'; del.style.marginTop='8px';
+        del.addEventListener('click',()=>{ if(!confirm('Eliminar evento?')) return; events=events.filter(x=>x.id!==ev.id); saveEvents(events); renderDayEvents(); renderMonth(current); });
+        el.appendChild(del); dayEvents.appendChild(el);
       });
     }
 
-    addEventBtn.addEventListener('click', () => {
-      const subjSelected = evSubject.value.trim();
-      const subjFree = evSubjectFree.value.trim();
-      const subject = subjFree || subjSelected;
-      const note = evNote.value.trim();
-      const type = evType.value;
-      if(!subject){ alert('Selecciona o escribe una materia/asunto.'); return; }
-      events.push({ id: uid(), date: selectedDateStr, subject, note, type });
-      saveEvents(events);
-      renderDayEvents();
-      renderMonth(current);
-      evSubjectFree.value = '';
-      evNote.value = '';
-    });
-
-    delAllDayEvents.addEventListener('click', () => {
-      if(!confirm('Borrar todos los eventos de este día?')) return;
-      events = events.filter(x => x.date !== selectedDateStr);
+    addEventBtn.addEventListener('click',()=>{
+      const subjSel = evSubject.value.trim(); const subjFree = evSubjectFree.value.trim(); const subj = subjFree||subjSel;
+      const note = evNote.value.trim(); const type = evType.value;
+      if(!subj){ alert('Selecciona o escribe una materia'); return; }
+      events.push({ id:uid(), date:selectedDate, subject:subj, note, type });
       saveEvents(events); renderDayEvents(); renderMonth(current);
+      evSubjectFree.value=''; evNote.value='';
+    });
+    delAllDayEvents.addEventListener('click',()=>{ if(!confirm('Borrar todos los eventos de este día?')) return; events = events.filter(x=>x.date!==selectedDate); saveEvents(events); renderDayEvents(); renderMonth(current); });
+    closeDayPanelBtn.addEventListener('click',()=> dayPanel.style.display='none');
+    prevMonthNav.addEventListener('click',()=>{ current=new Date(current.getFullYear(), current.getMonth()-1,1); renderMonth(current); });
+    nextMonthNav.addEventListener('click',()=>{ current=new Date(current.getFullYear(), current.getMonth()+1,1); renderMonth(current); });
+    todayBtn.addEventListener('click',()=>{ current=new Date(); renderMonth(current); });
+    btnExportEvents.addEventListener('click',()=>{ const blob=new Blob([JSON.stringify(events,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='events.json'; a.click(); URL.revokeObjectURL(url); });
+
+    document.addEventListener('click',(e)=>{ if(dayPanel.style.display==='none') return; if(dayPanel.contains(e.target)) return; if(e.target.closest('.cal-day')) return; dayPanel.style.display='none'; });
+
+    /* ---------- Conversational assistant (Wikipedia-based) ---------- */
+    const buscarInput = document.getElementById('buscarTermino'), btnBuscar = document.getElementById('btnBuscar'), sugerenciasEl = document.getElementById('sugerencias'), resultadoEl = document.getElementById('resultado');
+    const chatInput = document.getElementById('chatInput'), chatSend = document.getElementById('chatSend'), chatHistory = document.getElementById('chatHistory'), chatClear = document.getElementById('chatClear');
+
+    async function opensearch(q, limit=6){
+      const url = 'https://es.wikipedia.org/w/api.php?action=opensearch&format=json&limit='+limit+'&origin=*&search='+encodeURIComponent(q);
+      const r = await fetch(url);
+      if(!r.ok) throw new Error('Error opensearch');
+      return r.json();
+    }
+    async function summary(title){
+      const url = 'https://es.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(title);
+      const r = await fetch(url);
+      if(!r.ok) return null;
+      return r.json();
+    }
+
+    btnBuscar.addEventListener('click', async ()=>{
+      const q = buscarInput.value.trim(); if(!q) return;
+      resultadoEl.innerHTML = '<p class="nota">Buscando...</p>'; sugerenciasEl.innerHTML='';
+      try{
+        const data = await opensearch(q,6);
+        const titles = data[1]||[];
+        if(titles.length===0){ resultadoEl.innerHTML='<p class="nota">No se encontraron resultados.</p>'; return; }
+        // show suggestions
+        titles.forEach(t=>{ const b=document.createElement('button'); b.className='sugerencia'; b.textContent=t; b.addEventListener('click',()=> loadSummary(t)); sugerenciasEl.appendChild(b); });
+        // load first summary automatically
+        loadSummary(titles[0]);
+      }catch(err){ resultadoEl.innerHTML='<p class="nota">Error al buscar.</p>'; console.error(err); }
     });
 
-    closeDayPanel.addEventListener('click', () => { dayPanel.style.display='none'; });
+    async function loadSummary(title){
+      resultadoEl.innerHTML = '<p class="nota">Cargando resumen...</p>';
+      try{
+        const s = await summary(title);
+        if(!s){ resultadoEl.innerHTML='<p class="nota">No hay resumen.</p>'; return; }
+        let html = `<h3>${escapeHtml(s.title)}</h3>`;
+        if(s.thumbnail && s.thumbnail.source) html += `<img src="${escapeHtml(s.thumbnail.source)}" alt="${escapeHtml(s.title)}" style="max-width:120px;float:right;margin-left:8px">`;
+        html += s.extract_html? s.extract_html : '<p>'+escapeHtml(s.extract||'')+'</p>';
+        if(s.content_urls && s.content_urls.desktop && s.content_urls.desktop.page) html += `<p class="nota"><a href="${escapeHtml(s.content_urls.desktop.page)}" target="_blank" rel="noopener">Leer en Wikipedia</a></p>`;
+        resultadoEl.innerHTML = html;
+      }catch(e){ resultadoEl.innerHTML='<p class="nota">Error al cargar resumen.</p>'; console.error(e); }
+    }
 
-    prevMonth.addEventListener('click', () => { current = new Date(current.getFullYear(), current.getMonth()-1, 1); renderMonth(current); });
-    nextMonth.addEventListener('click', () => { current = new Date(current.getFullYear(), current.getMonth()+1, 1); renderMonth(current); });
-    todayBtn.addEventListener('click', () => { current = new Date(); renderMonth(current); });
+    // chat assistant: searches top titles and combines extracts
+    chatSend.addEventListener('click', ()=> { const q = chatInput.value.trim(); if(!q) return; assistantReply(q); chatInput.value=''; });
+    chatInput.addEventListener('keyup',(e)=>{ if(e.key==='Enter') chatSend.click(); });
+    chatClear.addEventListener('click', ()=> chatHistory.innerHTML='');
 
-    btnExportEvents.addEventListener('click', () => {
-      const dataStr = JSON.stringify(events, null, 2); const blob = new Blob([dataStr], {type:'application/json'}); const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = 'planner-events.json'; a.click(); URL.revokeObjectURL(url);
-    });
+    async function assistantReply(q){
+      appendUserMsg(q);
+      appendAssistantMsg('Buscando información relevante en Wikipedia...');
+      try{
+        const op = await opensearch(q,4);
+        const titles = op[1]||[];
+        if(titles.length===0){ updateLastAssistant('No encontré resultados en Wikipedia. Intenta con otra palabra clave.'); return; }
+        const promises = titles.slice(0,3).map(t=>summary(t).catch(()=>null));
+        const summaries = await Promise.all(promises);
+        let reply = '';
+        summaries.forEach(s=>{ if(!s) return; reply += `<strong>${escapeHtml(s.title)}</strong>\n${escapeHtml(s.extract||'')}\n\n`; });
+        reply += 'Fuentes: ' + titles.slice(0,3).map(t=>`"${t}"`).join(', ');
+        updateLastAssistantHtml(reply);
+      }catch(e){ updateLastAssistant('Error buscando información.'); console.error(e); }
+    }
 
-    // close panel on outside click
-    document.addEventListener('click', (e) => {
-      if(dayPanel.style.display === 'none') return;
-      if(dayPanel.contains(e.target)) return;
-      if(e.target.closest('.cal-day')) return;
-      dayPanel.style.display = 'none';
-    });
+    function appendUserMsg(text){ const el=document.createElement('div'); el.style.textAlign='right'; el.style.marginBottom='8px'; el.innerHTML=`<div style="display:inline-block;background:#eef2ff;padding:8px;border-radius:8px"><strong>Tú:</strong><div style="margin-top:6px">${escapeHtml(text)}</div></div>`; chatHistory.appendChild(el); chatHistory.scrollTop = chatHistory.scrollHeight; }
+    function appendAssistantMsg(text){ const el=document.createElement('div'); el.style.marginBottom='8px'; el.innerHTML=`<div style="background:#fff;border:1px solid #e6eefc;padding:8px;border-radius:6px"><strong>Asistente:</strong><div style="margin-top:6px">${escapeHtml(text).replace(/\n/g,'<br>')}</div></div>`; chatHistory.appendChild(el); chatHistory.scrollTop = chatHistory.scrollHeight; }
+    function updateLastAssistant(text){ const nodes = Array.from(chatHistory.children).reverse(); const last = nodes.find(n=>n.innerHTML.includes('Asistente:')); if(last) last.innerHTML = `<div style="background:#fff;border:1px solid #e6eefc;padding:8px;border-radius:6px"><strong>Asistente:</strong><div style="margin-top:6px">${escapeHtml(text).replace(/\n/g,'<br>')}</div></div>`; }
+    function updateLastAssistantHtml(html){ const nodes = Array.from(chatHistory.children).reverse(); const last = nodes.find(n=>n.innerHTML.includes('Asistente:')); if(last) last.innerHTML = `<div style="background:#fff;border:1px solid #e6eefc;padding:8px;border-radius:6px"><strong>Asistente:</strong><div style="margin-top:6px">${html.replace(/\n/g,'<br>')}</div></div>`; }
 
-    (function migrateOldEvents(){ try{ const old = localStorage.getItem('planner_events_v2'); if(old && !localStorage.getItem(EVENTS_KEY)){ localStorage.setItem(EVENTS_KEY, old); events = JSON.parse(old);} }catch(e){} })();
-
-    // init calendar
-    function initCalendar(){ refreshSubjectOptions(); current = new Date(); renderMonth(current); }
-    initCalendar();
-
-    /* ========= Pomodoro (simple) ========= */
+    /* ---------- Pomodoro + Techniques per subject ---------- */
     const pomTimerEl = document.getElementById('pomTimer');
     const pomStart = document.getElementById('pomStart');
     const pomPause = document.getElementById('pomPause');
@@ -803,49 +590,707 @@
     const workMins = document.getElementById('workMins');
     const breakMins = document.getElementById('breakMins');
     const pomStatus = document.getElementById('pomStatus');
+    const techSubject = document.getElementById('techSubject');
+    const loadTopicsBtn = document.getElementById('loadTopics');
+    const techContent = document.getElementById('techContent');
 
-    let pomState = { running:false, mode:'work', remaining:25*60, interval:null };
-
-    function formatMMSS(sec){ const m = String(Math.floor(sec/60)).padStart(2,'0'); const s = String(sec%60).padStart(2,'0'); return `${m}:${s}`; }
-    function updatePomDisplay(){ pomTimerEl.textContent = formatMMSS(pomState.remaining); pomStatus.textContent = pomState.mode === 'work' ? 'Work' : 'Break'; }
-
+    let pom = { running:false, mode:'work', remaining:25*60, interval:null };
+    function fmt(sec){ const m=String(Math.floor(sec/60)).padStart(2,'0'), s=String(sec%60).padStart(2,'0'); return `${m}:${s}`; }
+    function updatePom(){ pomTimerEl.textContent = fmt(pom.remaining); pomStatus.textContent = pom.mode==='work'?'Work':'Break'; }
     function startPom(){
-      if(pomState.running) return;
-      pomState.running = true;
-      pomState.interval = setInterval(() => {
-        pomState.remaining--;
-        if(pomState.remaining <= 0){
-          // switch modes
-          clearInterval(pomState.interval);
-          pomState.running = false;
-          // simple alert
+      if(pom.running) return;
+      pom.running=true;
+      pom.interval = setInterval(()=>{
+        pom.remaining--;
+        if(pom.remaining<=0){
+          clearInterval(pom.interval); pom.running=false;
           try{ new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=').play().catch(()=>{}); }catch(e){}
-          if(pomState.mode === 'work'){ pomState.mode = 'break'; pomState.remaining = Number(breakMins.value)*60; }
-          else { pomState.mode = 'work'; pomState.remaining = Number(workMins.value)*60; }
-          updatePomDisplay();
-          // auto-restart next session if desired
-          startPom();
-        } else {
-          updatePomDisplay();
-        }
-      }, 1000);
+          if(pom.mode==='work'){ pom.mode='break'; pom.remaining = Number(breakMins.value)*60; } else { pom.mode='work'; pom.remaining = Number(workMins.value)*60; }
+          updatePom(); startPom();
+        } else updatePom();
+      },1000);
     }
-    function pausePom(){ if(pomState.interval) clearInterval(pomState.interval); pomState.running=false; }
-    function resetPom(){ pausePom(); pomState.mode='work'; pomState.remaining = Number(workMins.value)*60; updatePomDisplay(); }
+    function pausePom(){ if(pom.interval) clearInterval(pom.interval); pom.running=false; }
+    function resetPom(){ pausePom(); pom.mode='work'; pom.remaining = Number(workMins.value)*60; updatePom(); }
 
-    pomStart.addEventListener('click', () => { if(!pomState.running){ // ensure durations applied
-      if(Number(workMins.value) <= 0 || Number(breakMins.value) <= 0){ alert('Duraciones deben ser mayores a 0'); return; }
-      if(!pomState.interval && pomState.remaining === 0) pomState.remaining = Number(workMins.value)*60;
-      startPom(); }});
-    pomPause.addEventListener('click', () => pausePom());
-    pomReset.addEventListener('click', () => resetPom());
-    // initialize pom
-    pomState.remaining = Number(workMins.value)*60;
-    updatePomDisplay();
+    pomStart.addEventListener('click', ()=>{ if(Number(workMins.value)<=0||Number(breakMins.value)<=0){ alert('Duraciones > 0'); return; } if(!pom.running && pom.remaining===0) pom.remaining=Number(workMins.value)*60; startPom(); });
+    pomPause.addEventListener('click', pausePom);
+    pomReset.addEventListener('click', resetPom);
+    pom.remaining = Number(workMins.value)*60; updatePom();
 
-    /* ========= init ========= */
-    initFromHash();
-    console.log('Planner inicializado — malla key:', STORAGE_KEY, 'events key:', EVENTS_KEY);
+    function populateTechSubjectSelect(){
+      techSubject.innerHTML = '<option value="">-- seleccionar materia --</option>';
+      malla.materias.map(m=>m.name).filter((v,i,a)=>a.indexOf(v)===i).sort().forEach(n=>{ const o=document.createElement('option'); o.value=n; o.textContent=n; techSubject.appendChild(o); });
+    }
+    loadTopicsBtn.addEventListener('click', ()=>{
+      const subj = techSubject.value; if(!subj){ alert('Selecciona materia'); return; }
+      const mat = malla.materias.find(m=>m.name===subj);
+      techContent.innerHTML = `<strong>${escapeHtml(subj)}</strong>`;
+      // show temario
+      const topics = mat?.topics || [];
+      techContent.innerHTML += `<div style="margin-top:8px"><em>Temas:</em><ul>${topics.map(t=>`<li>${escapeHtml(t)}</li>`).join('')}</ul></div>`;
+      // techniques (editable)
+      techContent.innerHTML += `<div style="margin-top:8px"><em>Técnicas / Notas personales:</em><div><textarea id="techNotes" rows="4" style="width:100%;padding:8px;border-radius:6px;border:1px solid #cbd5e1">${escapeHtml((mat?.techniques||[]).join('\\n'))}</textarea><div style="text-align:right;margin-top:6px"><button id="saveTech" class="btn-ghost">Guardar</button></div></div></div>`;
+      document.getElementById('saveTech').addEventListener('click',()=>{
+        const val = document.getElementById('techNotes').value.split('\\n').map(s=>s.trim()).filter(Boolean);
+        mat.techniques = val; saveMalla(malla); alert('Técnicas guardadas');
+      });
+    });
+
+    /* ---------- Utility init ---------- */
+    renderMalla(); renderMonth(current); refreshSubjectOptions(); populateTechSubjectSelect(); initFromHash();
+
+    // expose some functions to console for debugging
+    window._planner = { malla, renderMalla, renderMonth, events, saveMalla, saveEvents };
+    console.log('Planner listo');
+  })();
+  </script>
+</body>
+</html><!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Planner Medicina UBA</title>
+  <style>
+    :root{
+      --blue-700:#1e40af; --blue-600:#2563eb; --bg:#f1f5f9; --panel:#fff;
+      --text:#0f172a; --muted:#64748b; --accent:#10b981; --delete-blue:#2563eb;
+    }
+    html,body{margin:0;padding:0;font-family:Inter, Arial, Helvetica, sans-serif;background:var(--bg);color:var(--text);}
+    /* Tabs */
+    .tabs{display:flex;gap:6px;background:var(--blue-700);padding:8px;flex-wrap:wrap;}
+    .tabs [role="tab"]{flex:1;padding:12px 16px;color:#fff;border:0;background:transparent;border-radius:8px;cursor:pointer;text-align:center;}
+    .tabs [role="tab"][aria-selected="true"]{background:var(--blue-600);font-weight:600}
+    /* Panels */
+    .tab{display:none;padding:18px;margin:16px;border-radius:10px;background:var(--panel);box-shadow:0 8px 20px rgba(15,23,42,0.06)}
+    .tab.activa{display:block}
+    h2{margin:0 0 12px 0}
+    .nota{color:var(--muted);font-size:13px}
+    /* Malla */
+    .malla-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+    .malla-controls input,.malla-controls select{padding:8px;border-radius:6px;border:1px solid #cbd5e1;background:#fff}
+    .malla-controls button{padding:9px 12px;border-radius:6px;border:0;background:var(--blue-600);color:#fff;cursor:pointer}
+    .malla-years{display:flex;gap:12px;flex-wrap:wrap}
+    .year-box{flex:1 1 240px;background:#f8fafc;border:1px solid #e6eefc;padding:12px;border-radius:8px}
+    .materia{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+    .materia .name{flex:1;font-weight:700}
+    .materia input[type="number"]{width:84px;padding:6px;border-radius:6px;border:1px solid #e2e8f0}
+    .materia .avg{min-width:56px;text-align:center;font-weight:700}
+    .materia button.small{padding:6px 8px;border-radius:6px;border:0;cursor:pointer;background:var(--delete-blue);color:#fff}
+    .materia button.ter{padding:6px 8px;border-radius:6px;border:0;cursor:pointer;background:#6b7280;color:#fff}
+    /* Calendario */
+    .cal-header{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+    .cal-nav button,.btn-ghost{padding:8px 10px;border-radius:6px;border:0;background:var(--blue-600);color:#fff;cursor:pointer}
+    .btn-ghost{background:transparent;border:1px solid #cbd5e1;color:var(--text)}
+    .cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px}
+    .weekday{text-align:center;font-weight:700;color:var(--muted)}
+    .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+    .cal-day{background:#fff;border-radius:8px;min-height:84px;padding:8px;border:1px solid #e6eefc;position:relative;cursor:pointer}
+    .cal-day .date-num{font-weight:700}
+    .events-dot{position:absolute;bottom:6px;left:8px;display:flex;gap:6px;flex-wrap:wrap}
+    .event-dot{width:10px;height:10px;border-radius:50%;background:var(--accent);border:2px solid #fff}
+    .event-dot.parcial{background:#ef4444}
+    /* Day panel */
+    .day-panel{position:fixed;right:18px;top:80px;width:420px;max-width:calc(100% - 32px);background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px;box-shadow:0 24px 48px rgba(2,6,23,0.12);z-index:1200;display:none}
+    .day-panel h4{margin:0 0 8px 0}
+    .events-list{max-height:240px;overflow:auto;margin-bottom:8px;display:flex;flex-direction:column;gap:8px}
+    .ev{border:1px solid #f0f6ff;padding:8px;border-radius:8px;background:#f8fafc}
+    /* Temario modal */
+    .temario-panel{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:520px;max-width:calc(100% - 24px);background:#fff;border-radius:10px;padding:12px;box-shadow:0 24px 48px rgba(2,6,23,0.16);z-index:1500;display:none}
+    .temario-list{max-height:280px;overflow:auto;margin-bottom:8px;display:flex;flex-direction:column;gap:8px}
+    /* Grades modal */
+    .grades-panel{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:520px;max-width:calc(100% - 24px);background:#fff;border-radius:10px;padding:12px;box-shadow:0 24px 48px rgba(2,6,23,0.16);z-index:1500;display:none}
+    .grades-list{max-height:320px;overflow:auto;margin-bottom:8px;display:flex;flex-direction:column;gap:8px}
+    /* Pomodoro tab */
+    .pom-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+    .pom-controls input{padding:8px;border-radius:6px;border:1px solid #cbd5e1}
+    .temario-subj{margin-top:10px;background:#fbfdff;border:1px solid #e6eefc;padding:10px;border-radius:8px}
+    @media (max-width:720px){ .day-panel{left:8px;right:8px;top:auto;bottom:12px} .temario-panel,.grades-panel{width:calc(100% - 24px);left:12px;transform:none} }
+  </style>
+</head>
+<body>
+  <nav class="tabs" role="tablist" aria-label="Navegación">
+    <button id="tab-malla" role="tab" aria-controls="malla" aria-selected="false" tabindex="0">Malla</button>
+    <button id="tab-asistente" role="tab" aria-controls="asistente" aria-selected="false" tabindex="-1">Asistente</button>
+    <button id="tab-calendario" role="tab" aria-controls="calendario" aria-selected="false" tabindex="-1">Calendario</button>
+    <button id="tab-pomodoro" role="tab" aria-controls="pomodoro" aria-selected="false" tabindex="-1">Pomodoro</button>
+  </nav>
+
+  <main>
+    <!-- MALLA -->
+    <section id="malla" class="tab" role="tabpanel" aria-labelledby="tab-malla" tabindex="0">
+      <h2>Malla</h2>
+      <div class="malla-controls" aria-label="Controles malla">
+        <input id="materiaNombre" placeholder="Nombre de la materia (ej. Anatomía)" />
+        <select id="materiaYear">
+          <option value="CBC">CBC</option>
+          <option value="1">Año 1</option>
+          <option value="2">Año 2</option>
+          <option value="3">Año 3</option>
+          <option value="4">Año 4</option>
+          <option value="5">Año 5</option>
+          <option value="6">Año 6</option>
+        </select>
+        <button id="btnAgregarMateria">Agregar materia</button>
+        <button id="btnExport" style="margin-left:auto;background:var(--accent)">Exportar JSON</button>
+        <button id="btnImport" style="background:#f59e0b">Importar JSON</button>
+        <input id="fileImport" type="file" accept="application/json" style="display:none" />
+        <button id="btnVerCalificaciones" style="margin-left:8px;background:#111827;color:#fff">Ver calificaciones</button>
+      </div>
+
+      <div class="malla-years" id="mallaYears" aria-live="polite"></div>
+      <p class="nota">Usá "Temario" para agregar temas por materia. "Ver calificaciones" abre una vista con todas las notas.</p>
+    </section>
+
+    <!-- ASISTENTE -->
+    <section id="asistente" class="tab" role="tabpanel" aria-labelledby="tab-asistente" tabindex="0">
+      <h2>Asistente — Wikipedia + Conversacional</h2>
+
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <input id="buscarTermino" type="search" placeholder="Buscar en Wikipedia (ej. 'Fisiología')" />
+        <button id="btnBuscar">Buscar</button>
+      </div>
+      <div id="sugerencias" style="margin-bottom:8px"></div>
+      <div id="resultado" style="background:#fff;border:1px solid #e2e8f0;padding:12px;border-radius:8px"></div>
+
+      <hr style="margin:12px 0" />
+      <h3>Asistente conversacional gratuito</h3>
+      <p class="nota">Haz preguntas sobre materias y la carrera. El asistente busca en Wikipedia y sintetiza (sin API keys).</p>
+
+      <div style="display:flex;gap:12px">
+        <div style="flex:1;display:flex;flex-direction:column">
+          <div id="chatHistory" style="background:#fbfdff;border:1px solid #e6eefc;padding:8px;border-radius:6px;max-height:320px;overflow:auto"></div>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <input id="chatInput" placeholder="Ej.: ¿Qué contenidos tiene Bioquímica?" style="flex:1;padding:8px;border-radius:6px;border:1px solid #cbd5e1" />
+            <button id="chatSend" class="btn-ghost">Preguntar</button>
+            <button id="chatClear" class="btn-ghost">Limpiar</button>
+          </div>
+        </div>
+        <div style="width:260px">
+          <div style="background:#fff;border:1px solid #e2e8f0;padding:10px;border-radius:6px">
+            <strong>Consejos</strong>
+            <p class="nota">Para respuestas más largas usa preguntas específicas: p. ej. "Temas clave para parcial de Anatomía".</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CALENDARIO -->
+    <section id="calendario" class="tab" role="tabpanel" aria-labelledby="tab-calendario" tabindex="0">
+      <h2>Calendario mensual</h2>
+      <div class="cal-header">
+        <div>
+          <button id="prevMonthNav">&larr;</button>
+          <button id="todayBtn" class="btn-ghost">Hoy</button>
+          <button id="nextMonthNav">&rarr;</button>
+        </div>
+        <div id="monthTitle" style="flex:1;text-align:center;font-weight:700"></div>
+        <div style="width:120px;text-align:right">
+          <button id="btnExportEvents" style="background:var(--accent);color:#fff">Exportar</button>
+        </div>
+      </div>
+
+      <div class="cal-weekdays">
+        <div class="weekday">Lun</div><div class="weekday">Mar</div><div class="weekday">Mié</div><div class="weekday">Jue</div><div class="weekday">Vie</div><div class="weekday">Sáb</div><div class="weekday">Dom</div>
+      </div>
+
+      <div id="calendarGrid" class="calendar-grid" role="grid" aria-label="Calendario mensual"></div>
+      <p class="nota">Haz clic en un día para ver/añadir exámenes o sesiones de estudio (puedes marcar "Parcial").</p>
+
+      <div id="dayPanel" class="day-panel" role="dialog" aria-modal="true" aria-label="Panel del día">
+        <button id="closeDayPanel" class="btn-ghost" style="float:right">Cerrar</button>
+        <h4 id="dayPanelTitle">DD/MM/YYYY</h4>
+        <div id="dayEvents" class="events-list"></div>
+        <hr />
+        <div style="margin-top:8px">
+          <label>Tipo</label>
+          <select id="evType" style="width:100%;padding:8px;margin:6px 0">
+            <option value="estudio">Estudio</option>
+            <option value="parcial">Parcial</option>
+            <option value="otro">Otro</option>
+          </select>
+          <label>Materia</label>
+          <select id="evSubject" style="width:100%;padding:8px;margin:6px 0"><option value="">-- seleccionar --</option></select>
+          <input id="evSubjectFree" placeholder="O escribe una materia..." style="width:100%;padding:8px;border-radius:6px;border:1px solid #cbd5e1" />
+          <label>Temas / Notas</label>
+          <textarea id="evNote" rows="4" style="width:100%;padding:8px;border-radius:6px;border:1px solid #cbd5e1"></textarea>
+          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px">
+            <button id="addEventBtn" style="background:var(--blue-600);color:#fff;padding:8px 10px;border-radius:6px">Agregar</button>
+            <button id="delAllDayEvents" style="background:#ef4444;color:#fff;padding:8px 10px;border-radius:6px">Borrar todos</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- POMODORO -->
+    <section id="pomodoro" class="tab" role="tabpanel" aria-labelledby="tab-pomodoro" tabindex="0">
+      <h2>Pomodoro & Técnicas por materia</h2>
+      <div class="pom-controls">
+        <label>Work <input id="workMins" type="number" value="25" min="1" style="width:80px" /></label>
+        <label>Break <input id="breakMins" type="number" value="5" min="1" style="width:80px" /></label>
+        <button id="pomStart" class="btn-ghost">Iniciar</button>
+        <button id="pomPause" class="btn-ghost">Pausa</button>
+        <button id="pomReset" class="btn-ghost">Reset</button>
+        <div style="margin-left:auto"><strong id="pomStatus">Work</strong></div>
+      </div>
+      <div style="font-size:36px;font-weight:800;text-align:center;margin-bottom:12px" id="pomTimer">25:00</div>
+
+      <h3>Temáticas / Técnicas por materia</h3>
+      <div style="display:flex;gap:8px;align-items:center">
+        <select id="techSubject" style="padding:8px;border-radius:6px;border:1px solid #cbd5e1">
+          <option value="">-- seleccionar materia --</option>
+        </select>
+        <button id="loadTopics" class="btn-ghost">Cargar temario</button>
+      </div>
+      <div id="techContent" class="temario-subj"></div>
+      <p class="nota">Aquí puedes ver el temario guardado por materia y añadir técnicas de estudio propias.</p>
+    </section>
+  </main>
+
+  <!-- Temario modal -->
+  <div id="temarioModal" class="temario-panel" role="dialog" aria-modal="true" style="display:none">
+    <button id="closeTemario" class="btn-ghost" style="float:right">Cerrar</button>
+    <h4 id="temarioTitle">Temario</h4>
+    <div id="temarioList" class="temario-list"></div>
+    <div style="display:flex;gap:8px">
+      <input id="temaInput" placeholder="Agregar tema..." style="flex:1;padding:8px;border-radius:6px;border:1px solid #cbd5e1" />
+      <button id="addTemaBtn" class="btn-ghost">Agregar</button>
+    </div>
+  </div>
+
+  <!-- Grades modal -->
+  <div id="gradesModal" class="grades-panel" role="dialog" aria-modal="true" style="display:none">
+    <button id="closeGrades" class="btn-ghost" style="float:right">Cerrar</button>
+    <h4>Calificaciones — todas las materias</h4>
+    <div id="gradesList" class="grades-list"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button id="saveGrades" class="btn-ghost">Guardar</button>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    /* ---------- Helpers ---------- */
+    const STORAGE_KEY = 'malla_full_v3';
+    const EVENTS_KEY = 'planner_events_v3';
+    function uid(){ return 'id' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+    function escapeHtml(s){ return String(s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m])); }
+
+    /* ---------- Tabs ---------- */
+    const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+    const panels = Array.from(document.querySelectorAll('[role="tabpanel"]'));
+    function mostrarTab(id, updateHash=true){ panels.forEach(p=>p.classList.remove('activa')); tabs.forEach(t=>{t.setAttribute('aria-selected','false');t.setAttribute('tabindex','-1')}); const p=document.getElementById(id); const t=tabs.find(x=>x.getAttribute('aria-controls')===id); if(p&&t){ p.classList.add('activa'); t.setAttribute('aria-selected','true'); t.setAttribute('tabindex','0'); t.focus({preventScroll:true}); if(updateHash) history.replaceState(null,'','#'+id);} }
+    tabs.forEach(t=>{ t.addEventListener('click', ()=>mostrarTab(t.getAttribute('aria-controls'))); t.addEventListener('keydown',(e)=>{ const idx=tabs.indexOf(t); let ni=null; if(e.key==='ArrowRight') ni=(idx+1)%tabs.length; else if(e.key==='ArrowLeft') ni=(idx-1+tabs.length)%tabs.length; else if(e.key==='Home') ni=0; else if(e.key==='End') ni=tabs.length-1; if(ni!==null){ e.preventDefault(); tabs[ni].focus(); } }); t.addEventListener('keyup',(e)=>{ if(e.key==='Enter' || e.key===' ') mostrarTab(t.getAttribute('aria-controls')) });});
+    function initFromHash(){ const h=location.hash.replace('#',''); if(panels.some(p=>p.id===h)) mostrarTab(h,false); else mostrarTab('malla',false); }
+    window.addEventListener('hashchange', ()=>{ const id=location.hash.replace('#',''); if(id) mostrarTab(id,false); });
+
+    /* ---------- Data: malla + events ---------- */
+    const defaultSubjects = [
+      // CBC
+      'Química','Biofísica','Biología','IPC','ICSE','Matemática',
+      // Año1
+      'Anatomía','Histología','Embriología','Genética',
+      // Año2
+      'Bioquímica','Inmunología','Microbiología','Fisiología',
+      // Transversales / Año3 default
+      'Salud Mental','Bioética','Salud Pública','Inglés Médico',
+      // Clinicas / Año3
+      'Patología','Semiología','Farmacología I','Farmacología II','Medicina Legal','Toxicología',
+      // Clinicas avanzadas
+      'Medicina Interna','Nutrición','Diagnóstico por imágenes','Dermatología','Infectología','Neumonología','Neurología','Psiquiatría',
+      'Neurocirugía','Pediatría','Obstetricia','Ginecología','Cirugía General','Urología','Traumatología','Oftalmología','Otorrinolaringología'
+    ];
+    // load/save malla
+    function loadMalla(){ try{ const raw=localStorage.getItem(STORAGE_KEY); return raw?JSON.parse(raw):null }catch(e){return null} }
+    function saveMalla(data){ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+
+    // initialize malla if empty
+    let malla = loadMalla();
+    if(!malla || !Array.isArray(malla.materias) || malla.materias.length===0){
+      // simple heuristic to assign years (some known, rest 3)
+      const mapYear = new Map([
+        ['Química','CBC'],['Biofísica','CBC'],['Biología','CBC'],['IPC','CBC'],['ICSE','CBC'],['Matemática','CBC'],
+        ['Anatomía',1],['Histología',1],['Embriología',1],['Genética',1],
+        ['Bioquímica',2],['Inmunología',2],['Microbiología',2],['Fisiología',2],
+        ['Salud Mental',3],['Bioética',3],['Salud Pública',3],['Inglés Médico',3],
+        ['Patología',3],['Semiología',3],['Farmacología I',3],['Farmacología II',3],['Medicina Legal',3],['Toxicología',3],
+        ['Medicina Interna',4],['Nutrición',4],['Diagnóstico por imágenes',4],['Dermatología',4],['Infectología',4],['Neumonología',4],['Neurología',4],['Psiquiatría',4],
+        ['Neurocirugía',5],['Pediatría',5],['Obstetricia',5],['Ginecología',5],['Cirugía General',5],['Urología',5],['Traumatología',5],['Oftalmología',6],['Otorrinolaringología',6]
+      ]);
+      malla = { materias: defaultSubjects.map(name => ({ id: uid(), name, year: mapYear.get(name)??3, p1:null, p2:null, topics:[], techniques:[] })) };
+      saveMalla(malla);
+    }
+
+    /* ---------- Render Malla (with Temario + Delete blue) ---------- */
+    const mallaYearsEl = document.getElementById('mallaYears');
+    const materiaNombre = document.getElementById('materiaNombre');
+    const materiaYear = document.getElementById('materiaYear');
+    const btnAgregarMateria = document.getElementById('btnAgregarMateria');
+    const btnExport = document.getElementById('btnExport');
+    const btnImport = document.getElementById('btnImport');
+    const fileImport = document.getElementById('fileImport');
+    const btnVerCalificaciones = document.getElementById('btnVerCalificaciones');
+
+    const YEARS = ['CBC',1,2,3,4,5,6];
+
+    function calcAvg(p1,p2){
+      const a = (p1===null||p1===undefined||p1==='')?null:Number(p1);
+      const b = (p2===null||p2===undefined||p2==='')?null:Number(p2);
+      if(a===null && b===null) return '--';
+      if(a===null) return b.toFixed(1);
+      if(b===null) return a.toFixed(1);
+      return ((a+b)/2).toFixed(1);
+    }
+
+    function renderMalla(){
+      mallaYearsEl.innerHTML = '';
+      YEARS.forEach(y=>{
+        const box=document.createElement('div');box.className='year-box';box.dataset.year=y;
+        box.innerHTML = `<h3>${y==='CBC'?'CBC':'Año '+y}</h3><div class="materias-list"></div>`;
+        const list = box.querySelector('.materias-list');
+        const materias = malla.materias.filter(m => (typeof y==='number') ? Number(m.year)===y : m.year===y);
+        if(materias.length===0){ const p=document.createElement('p');p.className='nota';p.textContent='No hay materias en este año.';list.appendChild(p); }
+        else materias.forEach(m=>{
+          const row=document.createElement('div');row.className='materia';
+          row.innerHTML = `<div class="name" title="${escapeHtml(m.name)}">${escapeHtml(m.name)}</div>
+            <input type="number" min="0" max="10" step="0.1" value="${m.p1??''}" data-id="${m.id}" data-field="p1" aria-label="P1 ${escapeHtml(m.name)}">
+            <input type="number" min="0" max="10" step="0.1" value="${m.p2??''}" data-id="${m.id}" data-field="p2" aria-label="P2 ${escapeHtml(m.name)}">
+            <div class="avg">${calcAvg(m.p1,m.p2)}</div>
+            <button class="ter" data-action="temario" data-id="${m.id}">Temario</button>
+            <button class="small" data-action="delete" data-id="${m.id}">Eliminar</button>`;
+          list.appendChild(row);
+        });
+        mallaYearsEl.appendChild(box);
+      });
+
+      // listeners for inputs
+      mallaYearsEl.querySelectorAll('input[type="number"]').forEach(inp=>{
+        inp.addEventListener('change',()=>{
+          const id=inp.dataset.id, field=inp.dataset.field, val = inp.value===''?null:Number(inp.value);
+          const mat = malla.materias.find(x=>x.id===id);
+          if(mat){ mat[field]=val; saveMalla(malla); renderMalla(); }
+        });
+      });
+      // delete
+      mallaYearsEl.querySelectorAll('button[data-action="delete"]').forEach(b=>{
+        b.addEventListener('click',()=>{
+          const id=b.dataset.id; if(!confirm('Eliminar materia?')) return;
+          malla.materias = malla.materias.filter(x=>x.id!==id); saveMalla(malla); renderMalla();
+        });
+      });
+      // temario
+      mallaYearsEl.querySelectorAll('button[data-action="temario"]').forEach(b=>{
+        b.addEventListener('click',()=> openTemario(b.dataset.id));
+      });
+
+      // refresh selects
+      refreshSubjectOptions();
+      populateTechSubjectSelect();
+    }
+
+    btnAgregarMateria.addEventListener('click',()=>{
+      const name = materiaNombre.value.trim(); const y = materiaYear.value; const year = y==='CBC'?'CBC':Number(y);
+      if(!name){ alert('Escribe nombre'); return; }
+      malla.materias.push({ id:uid(), name, year, p1:null, p2:null, topics:[], techniques:[] });
+      saveMalla(malla); materiaNombre.value=''; materiaYear.value='1'; renderMalla();
+    });
+    btnExport.addEventListener('click',()=>{
+      const blob = new Blob([JSON.stringify(malla,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');a.href=url;a.download='malla-export.json';a.click();URL.revokeObjectURL(url);
+    });
+    btnImport.addEventListener('click',()=>fileImport.click());
+    fileImport.addEventListener('change', (e)=>{
+      const f=e.target.files[0]; if(!f) return;
+      const r=new FileReader(); r.onload=ev=>{
+        try{
+          const data=JSON.parse(ev.target.result);
+          if(!data||!Array.isArray(data.materias)) throw new Error('Formato inválido');
+          malla=data; saveMalla(malla); renderMalla(); alert('Importado');
+        }catch(err){ alert('Error: '+err.message); }
+      }; r.readAsText(f);
+    });
+
+    /* ---------- Temario modal ---------- */
+    const temarioModal = document.getElementById('temarioModal');
+    const temarioTitle = document.getElementById('temarioTitle');
+    const temarioList = document.getElementById('temarioList');
+    const temaInput = document.getElementById('temaInput');
+    const addTemaBtn = document.getElementById('addTemaBtn');
+    const closeTemario = document.getElementById('closeTemario');
+    let activeTemarioId = null;
+
+    function openTemario(id){
+      activeTemarioId = id;
+      const mat = malla.materias.find(m=>m.id===id);
+      if(!mat) return;
+      temarioTitle.textContent = 'Temario — '+mat.name;
+      renderTemario(mat);
+      temarioModal.style.display='block';
+    }
+    function renderTemario(mat){
+      temarioList.innerHTML='';
+      if(!mat.topics||mat.topics.length===0){ temarioList.innerHTML='<p class="nota">Aún no hay temas.</p>'; return; }
+      mat.topics.forEach((t,i)=>{
+        const el=document.createElement('div'); el.style.display='flex'; el.style.justifyContent='space-between'; el.style.alignItems='center';
+        el.innerHTML = `<div>${escapeHtml(t)}</div><div><button data-i="${i}" class="btn-ghost">Eliminar</button></div>`;
+        temarioList.appendChild(el);
+      });
+      temarioList.querySelectorAll('button[data-i]').forEach(b=>{
+        b.addEventListener('click',()=>{
+          const i=Number(b.dataset.i);
+          mat.topics.splice(i,1); saveMalla(malla); renderTemario(mat); renderMalla();
+        });
+      });
+    }
+    addTemaBtn.addEventListener('click',()=>{
+      const v = temaInput.value.trim(); if(!v) return;
+      const mat = malla.materias.find(m=>m.id===activeTemarioId); if(!mat) return;
+      mat.topics = mat.topics||[]; mat.topics.push(v); saveMalla(malla); temaInput.value=''; renderTemario(mat); renderMalla();
+    });
+    closeTemario.addEventListener('click', ()=>{ temarioModal.style.display='none'; activeTemarioId=null; });
+
+    /* ---------- Grades modal (all grades in Malla) ---------- */
+    const gradesModal = document.getElementById('gradesModal');
+    const gradesList = document.getElementById('gradesList');
+    const closeGrades = document.getElementById('closeGrades');
+    const saveGrades = document.getElementById('saveGrades');
+
+    btnVerCalificaciones.addEventListener('click', ()=> openGrades());
+    function openGrades(){
+      gradesList.innerHTML = '';
+      malla.materias.forEach(m=>{
+        const el=document.createElement('div'); el.style.display='flex'; el.style.alignItems='center'; el.style.gap='8px';
+        el.innerHTML = `<div style="flex:1">${escapeHtml(m.name)}</div>
+          <input type="number" min="0" max="10" step="0.1" value="${m.p1??''}" data-id="${m.id}" data-field="p1" style="width:88px;padding:6px;border-radius:6px;border:1px solid #e2e8f0" />
+          <input type="number" min="0" max="10" step="0.1" value="${m.p2??''}" data-id="${m.id}" data-field="p2" style="width:88px;padding:6px;border-radius:6px;border:1px solid #e2e8f0" />
+          <div style="width:72px;text-align:center">${calcAvg(m.p1,m.p2)}</div>`;
+        gradesList.appendChild(el);
+      });
+      gradesModal.style.display='block';
+    }
+    closeGrades.addEventListener('click', ()=> gradesModal.style.display='none');
+    saveGrades.addEventListener('click', ()=>{
+      gradesList.querySelectorAll('input[type="number"]').forEach(inp=>{
+        const id=inp.dataset.id, f=inp.dataset.field, v=inp.value===''?null:Number(inp.value);
+        const m = malla.materias.find(x=>x.id===id);
+        if(m) m[f]=v;
+      });
+      saveMalla(malla); renderMalla(); gradesModal.style.display='none';
+    });
+
+    /* ---------- Calendar monthly (fixed) ---------- */
+    const calendarGrid = document.getElementById('calendarGrid');
+    const monthTitle = document.getElementById('monthTitle');
+    const prevMonthNav = document.getElementById('prevMonthNav');
+    const nextMonthNav = document.getElementById('nextMonthNav');
+    const todayBtn = document.getElementById('todayBtn');
+    const dayPanel = document.getElementById('dayPanel');
+    const dayPanelTitle = document.getElementById('dayPanelTitle');
+    const dayEvents = document.getElementById('dayEvents');
+    const evType = document.getElementById('evType');
+    const evSubject = document.getElementById('evSubject');
+    const evSubjectFree = document.getElementById('evSubjectFree');
+    const evNote = document.getElementById('evNote');
+    const addEventBtn = document.getElementById('addEventBtn');
+    const delAllDayEvents = document.getElementById('delAllDayEvents');
+    const closeDayPanelBtn = document.getElementById('closeDayPanel');
+    const btnExportEvents = document.getElementById('btnExportEvents');
+
+    let events = (function(){ try{ const raw = localStorage.getItem(EVENTS_KEY); return raw?JSON.parse(raw):[] }catch(e){return[]} })();
+    let current = new Date(), selectedDate = null;
+
+    function saveEvents(arr){ localStorage.setItem(EVENTS_KEY, JSON.stringify(arr)); }
+    function refreshSubjectOptions(){ evSubject.innerHTML = '<option value="">-- seleccionar --</option>'; malla.materias.map(m=>m.name).filter((v,i,a)=>a.indexOf(v)===i).sort().forEach(n=>{ const o=document.createElement('option');o.value=n;o.textContent=n;evSubject.appendChild(o); }); }
+    function toISO(d){ const yy=d.getFullYear(); const mm=String(d.getMonth()+1).padStart(2,'0'); const dd=String(d.getDate()).padStart(2,'0'); return `${yy}-${mm}-${dd}`; }
+    function isSameDay(a,b){ return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate(); }
+
+    function renderMonth(date){
+      calendarGrid.innerHTML=''; const year=date.getFullYear(), month=date.getMonth();
+      const first=new Date(year,month,1), last=new Date(year,month+1,0);
+      const monthNames=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+      monthTitle.textContent = monthNames[month] + ' ' + year;
+      const firstWeekday = (first.getDay()+6)%7;
+      for(let i=0;i<firstWeekday;i++){ const blank=document.createElement('div'); blank.className='cal-day'; blank.style.background='transparent'; blank.style.border='0'; calendarGrid.appendChild(blank); }
+      for(let d=1;d<=last.getDate();d++){
+        const dt=new Date(year,month,d); const dayStr = toISO(dt);
+        const dayEl=document.createElement('div'); dayEl.className='cal-day'; dayEl.tabIndex=0;
+        dayEl.innerHTML = `<div class="date-num">${d}</div><div class="events-dot"></div>`;
+        const dots = dayEl.querySelector('.events-dot');
+        const evs = events.filter(e=>e.date===dayStr);
+        evs.slice(0,5).forEach(e=>{ const dot=document.createElement('span'); dot.className='event-dot'+(e.type==='parcial'?' parcial':''); dots.appendChild(dot); });
+        if(isSameDay(dt,new Date())) dayEl.style.boxShadow='inset 0 0 0 2px rgba(37,99,235,0.12)';
+        dayEl.addEventListener('click',()=> openDayPanel(dayStr));
+        dayEl.addEventListener('keydown',(e)=>{ if(e.key==='Enter' || e.key===' ') openDayPanel(dayStr); });
+        calendarGrid.appendChild(dayEl);
+      }
+    }
+
+    function openDayPanel(dateStr){
+      selectedDate = dateStr; dayPanelTitle.textContent = dateStr.split('-').reverse().join('/');
+      renderDayEvents(); refreshSubjectOptions(); evSubject.value=''; evSubjectFree.value=''; evNote.value=''; evType.value='estudio'; dayPanel.style.display='block';
+    }
+    function renderDayEvents(){
+      dayEvents.innerHTML=''; const dayEvs = events.filter(e=>e.date===selectedDate);
+      if(dayEvs.length===0){ dayEvents.innerHTML='<p class="nota">No hay eventos en este día.</p>'; return; }
+      dayEvs.forEach(ev=>{
+        const el=document.createElement('div'); el.className='ev';
+        el.innerHTML = `<strong>${escapeHtml(ev.subject)}${ev.type==='parcial'?' — <em>Parcial</em>':''}</strong>
+        <div style="font-size:13px;margin-top:6px;color:${ev.note?'#334155':'#64748b'}">${escapeHtml(ev.note||'(sin temas)')}</div>`;
+        const del=document.createElement('button'); del.className='btn-ghost'; del.textContent='Eliminar'; del.style.marginTop='8px';
+        del.addEventListener('click',()=>{ if(!confirm('Eliminar evento?')) return; events=events.filter(x=>x.id!==ev.id); saveEvents(events); renderDayEvents(); renderMonth(current); });
+        el.appendChild(del); dayEvents.appendChild(el);
+      });
+    }
+
+    addEventBtn.addEventListener('click',()=>{
+      const subjSel = evSubject.value.trim(); const subjFree = evSubjectFree.value.trim(); const subj = subjFree||subjSel;
+      const note = evNote.value.trim(); const type = evType.value;
+      if(!subj){ alert('Selecciona o escribe una materia'); return; }
+      events.push({ id:uid(), date:selectedDate, subject:subj, note, type });
+      saveEvents(events); renderDayEvents(); renderMonth(current);
+      evSubjectFree.value=''; evNote.value='';
+    });
+    delAllDayEvents.addEventListener('click',()=>{ if(!confirm('Borrar todos los eventos de este día?')) return; events = events.filter(x=>x.date!==selectedDate); saveEvents(events); renderDayEvents(); renderMonth(current); });
+    closeDayPanelBtn.addEventListener('click',()=> dayPanel.style.display='none');
+    prevMonthNav.addEventListener('click',()=>{ current=new Date(current.getFullYear(), current.getMonth()-1,1); renderMonth(current); });
+    nextMonthNav.addEventListener('click',()=>{ current=new Date(current.getFullYear(), current.getMonth()+1,1); renderMonth(current); });
+    todayBtn.addEventListener('click',()=>{ current=new Date(); renderMonth(current); });
+    btnExportEvents.addEventListener('click',()=>{ const blob=new Blob([JSON.stringify(events,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='events.json'; a.click(); URL.revokeObjectURL(url); });
+
+    document.addEventListener('click',(e)=>{ if(dayPanel.style.display==='none') return; if(dayPanel.contains(e.target)) return; if(e.target.closest('.cal-day')) return; dayPanel.style.display='none'; });
+
+    /* ---------- Conversational assistant (Wikipedia-based) ---------- */
+    const buscarInput = document.getElementById('buscarTermino'), btnBuscar = document.getElementById('btnBuscar'), sugerenciasEl = document.getElementById('sugerencias'), resultadoEl = document.getElementById('resultado');
+    const chatInput = document.getElementById('chatInput'), chatSend = document.getElementById('chatSend'), chatHistory = document.getElementById('chatHistory'), chatClear = document.getElementById('chatClear');
+
+    async function opensearch(q, limit=6){
+      const url = 'https://es.wikipedia.org/w/api.php?action=opensearch&format=json&limit='+limit+'&origin=*&search='+encodeURIComponent(q);
+      const r = await fetch(url);
+      if(!r.ok) throw new Error('Error opensearch');
+      return r.json();
+    }
+    async function summary(title){
+      const url = 'https://es.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(title);
+      const r = await fetch(url);
+      if(!r.ok) return null;
+      return r.json();
+    }
+
+    btnBuscar.addEventListener('click', async ()=>{
+      const q = buscarInput.value.trim(); if(!q) return;
+      resultadoEl.innerHTML = '<p class="nota">Buscando...</p>'; sugerenciasEl.innerHTML='';
+      try{
+        const data = await opensearch(q,6);
+        const titles = data[1]||[];
+        if(titles.length===0){ resultadoEl.innerHTML='<p class="nota">No se encontraron resultados.</p>'; return; }
+        // show suggestions
+        titles.forEach(t=>{ const b=document.createElement('button'); b.className='sugerencia'; b.textContent=t; b.addEventListener('click',()=> loadSummary(t)); sugerenciasEl.appendChild(b); });
+        // load first summary automatically
+        loadSummary(titles[0]);
+      }catch(err){ resultadoEl.innerHTML='<p class="nota">Error al buscar.</p>'; console.error(err); }
+    });
+
+    async function loadSummary(title){
+      resultadoEl.innerHTML = '<p class="nota">Cargando resumen...</p>';
+      try{
+        const s = await summary(title);
+        if(!s){ resultadoEl.innerHTML='<p class="nota">No hay resumen.</p>'; return; }
+        let html = `<h3>${escapeHtml(s.title)}</h3>`;
+        if(s.thumbnail && s.thumbnail.source) html += `<img src="${escapeHtml(s.thumbnail.source)}" alt="${escapeHtml(s.title)}" style="max-width:120px;float:right;margin-left:8px">`;
+        html += s.extract_html? s.extract_html : '<p>'+escapeHtml(s.extract||'')+'</p>';
+        if(s.content_urls && s.content_urls.desktop && s.content_urls.desktop.page) html += `<p class="nota"><a href="${escapeHtml(s.content_urls.desktop.page)}" target="_blank" rel="noopener">Leer en Wikipedia</a></p>`;
+        resultadoEl.innerHTML = html;
+      }catch(e){ resultadoEl.innerHTML='<p class="nota">Error al cargar resumen.</p>'; console.error(e); }
+    }
+
+    // chat assistant: searches top titles and combines extracts
+    chatSend.addEventListener('click', ()=> { const q = chatInput.value.trim(); if(!q) return; assistantReply(q); chatInput.value=''; });
+    chatInput.addEventListener('keyup',(e)=>{ if(e.key==='Enter') chatSend.click(); });
+    chatClear.addEventListener('click', ()=> chatHistory.innerHTML='');
+
+    async function assistantReply(q){
+      appendUserMsg(q);
+      appendAssistantMsg('Buscando información relevante en Wikipedia...');
+      try{
+        const op = await opensearch(q,4);
+        const titles = op[1]||[];
+        if(titles.length===0){ updateLastAssistant('No encontré resultados en Wikipedia. Intenta con otra palabra clave.'); return; }
+        const promises = titles.slice(0,3).map(t=>summary(t).catch(()=>null));
+        const summaries = await Promise.all(promises);
+        let reply = '';
+        summaries.forEach(s=>{ if(!s) return; reply += `<strong>${escapeHtml(s.title)}</strong>\n${escapeHtml(s.extract||'')}\n\n`; });
+        reply += 'Fuentes: ' + titles.slice(0,3).map(t=>`"${t}"`).join(', ');
+        updateLastAssistantHtml(reply);
+      }catch(e){ updateLastAssistant('Error buscando información.'); console.error(e); }
+    }
+
+    function appendUserMsg(text){ const el=document.createElement('div'); el.style.textAlign='right'; el.style.marginBottom='8px'; el.innerHTML=`<div style="display:inline-block;background:#eef2ff;padding:8px;border-radius:8px"><strong>Tú:</strong><div style="margin-top:6px">${escapeHtml(text)}</div></div>`; chatHistory.appendChild(el); chatHistory.scrollTop = chatHistory.scrollHeight; }
+    function appendAssistantMsg(text){ const el=document.createElement('div'); el.style.marginBottom='8px'; el.innerHTML=`<div style="background:#fff;border:1px solid #e6eefc;padding:8px;border-radius:6px"><strong>Asistente:</strong><div style="margin-top:6px">${escapeHtml(text).replace(/\n/g,'<br>')}</div></div>`; chatHistory.appendChild(el); chatHistory.scrollTop = chatHistory.scrollHeight; }
+    function updateLastAssistant(text){ const nodes = Array.from(chatHistory.children).reverse(); const last = nodes.find(n=>n.innerHTML.includes('Asistente:')); if(last) last.innerHTML = `<div style="background:#fff;border:1px solid #e6eefc;padding:8px;border-radius:6px"><strong>Asistente:</strong><div style="margin-top:6px">${escapeHtml(text).replace(/\n/g,'<br>')}</div></div>`; }
+    function updateLastAssistantHtml(html){ const nodes = Array.from(chatHistory.children).reverse(); const last = nodes.find(n=>n.innerHTML.includes('Asistente:')); if(last) last.innerHTML = `<div style="background:#fff;border:1px solid #e6eefc;padding:8px;border-radius:6px"><strong>Asistente:</strong><div style="margin-top:6px">${html.replace(/\n/g,'<br>')}</div></div>`; }
+
+    /* ---------- Pomodoro + Techniques per subject ---------- */
+    const pomTimerEl = document.getElementById('pomTimer');
+    const pomStart = document.getElementById('pomStart');
+    const pomPause = document.getElementById('pomPause');
+    const pomReset = document.getElementById('pomReset');
+    const workMins = document.getElementById('workMins');
+    const breakMins = document.getElementById('breakMins');
+    const pomStatus = document.getElementById('pomStatus');
+    const techSubject = document.getElementById('techSubject');
+    const loadTopicsBtn = document.getElementById('loadTopics');
+    const techContent = document.getElementById('techContent');
+
+    let pom = { running:false, mode:'work', remaining:25*60, interval:null };
+    function fmt(sec){ const m=String(Math.floor(sec/60)).padStart(2,'0'), s=String(sec%60).padStart(2,'0'); return `${m}:${s}`; }
+    function updatePom(){ pomTimerEl.textContent = fmt(pom.remaining); pomStatus.textContent = pom.mode==='work'?'Work':'Break'; }
+    function startPom(){
+      if(pom.running) return;
+      pom.running=true;
+      pom.interval = setInterval(()=>{
+        pom.remaining--;
+        if(pom.remaining<=0){
+          clearInterval(pom.interval); pom.running=false;
+          try{ new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=').play().catch(()=>{}); }catch(e){}
+          if(pom.mode==='work'){ pom.mode='break'; pom.remaining = Number(breakMins.value)*60; } else { pom.mode='work'; pom.remaining = Number(workMins.value)*60; }
+          updatePom(); startPom();
+        } else updatePom();
+      },1000);
+    }
+    function pausePom(){ if(pom.interval) clearInterval(pom.interval); pom.running=false; }
+    function resetPom(){ pausePom(); pom.mode='work'; pom.remaining = Number(workMins.value)*60; updatePom(); }
+
+    pomStart.addEventListener('click', ()=>{ if(Number(workMins.value)<=0||Number(breakMins.value)<=0){ alert('Duraciones > 0'); return; } if(!pom.running && pom.remaining===0) pom.remaining=Number(workMins.value)*60; startPom(); });
+    pomPause.addEventListener('click', pausePom);
+    pomReset.addEventListener('click', resetPom);
+    pom.remaining = Number(workMins.value)*60; updatePom();
+
+    function populateTechSubjectSelect(){
+      techSubject.innerHTML = '<option value="">-- seleccionar materia --</option>';
+      malla.materias.map(m=>m.name).filter((v,i,a)=>a.indexOf(v)===i).sort().forEach(n=>{ const o=document.createElement('option'); o.value=n; o.textContent=n; techSubject.appendChild(o); });
+    }
+    loadTopicsBtn.addEventListener('click', ()=>{
+      const subj = techSubject.value; if(!subj){ alert('Selecciona materia'); return; }
+      const mat = malla.materias.find(m=>m.name===subj);
+      techContent.innerHTML = `<strong>${escapeHtml(subj)}</strong>`;
+      // show temario
+      const topics = mat?.topics || [];
+      techContent.innerHTML += `<div style="margin-top:8px"><em>Temas:</em><ul>${topics.map(t=>`<li>${escapeHtml(t)}</li>`).join('')}</ul></div>`;
+      // techniques (editable)
+      techContent.innerHTML += `<div style="margin-top:8px"><em>Técnicas / Notas personales:</em><div><textarea id="techNotes" rows="4" style="width:100%;padding:8px;border-radius:6px;border:1px solid #cbd5e1">${escapeHtml((mat?.techniques||[]).join('\\n'))}</textarea><div style="text-align:right;margin-top:6px"><button id="saveTech" class="btn-ghost">Guardar</button></div></div></div>`;
+      document.getElementById('saveTech').addEventListener('click',()=>{
+        const val = document.getElementById('techNotes').value.split('\\n').map(s=>s.trim()).filter(Boolean);
+        mat.techniques = val; saveMalla(malla); alert('Técnicas guardadas');
+      });
+    });
+
+    /* ---------- Utility init ---------- */
+    renderMalla(); renderMonth(current); refreshSubjectOptions(); populateTechSubjectSelect(); initFromHash();
+
+    // expose some functions to console for debugging
+    window._planner = { malla, renderMalla, renderMonth, events, saveMalla, saveEvents };
+    console.log('Planner listo');
   })();
   </script>
 </body>
