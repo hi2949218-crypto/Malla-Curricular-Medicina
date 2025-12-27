@@ -2,292 +2,187 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Medicina FMED – Organizador Completo</title>
-
-<!-- FullCalendar -->
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css" rel="stylesheet">
+<title>Medicina FMED – Planner</title>
 
 <style>
-body{
-  margin:0;
-  font-family:Segoe UI, sans-serif;
-  background:#f2f6fb;
-}
-header{
-  background:#0b3c5d;
-  color:white;
-  padding:15px;
-  text-align:center;
-}
-nav{
-  display:flex;
-  justify-content:center;
-  background:#1f6fa8;
-  flex-wrap:wrap;
-}
-nav button{
-  background:none;
-  border:none;
-  color:white;
-  padding:12px 16px;
-  cursor:pointer;
-}
-nav button:hover{background:#155a8a;}
-section{display:none;padding:20px;}
-section.activa{display:block}
-
-/* ===== MALLA ===== */
-.malla{
-  display:flex;
-  gap:18px;
-  overflow-x:auto;
-}
-.anio{
-  min-width:240px;
-  background:white;
-  padding:14px;
-  border-radius:14px;
-  box-shadow:0 2px 6px rgba(0,0,0,.08);
-}
-.anio h3{
-  text-align:center;
-  color:#1f6fa8;
-}
-.materia{
-  background:#e3f1ff;
-  border:2px solid #8bbce8;
-  border-radius:10px;
-  padding:10px;
-  margin-bottom:8px;
-  cursor:pointer;
-}
-.materia.aprobada{
-  background:#c9ead3;
-  border-color:#5fb37c;
-}
-.materia small{
-  display:block;
-  font-size:12px;
-  margin-top:4px;
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f4f7fb;
 }
 
-/* ===== CALENDARIO ===== */
-#calendar{
-  max-width:900px;
-  margin:auto;
-  background:white;
-  padding:15px;
-  border-radius:14px;
+header {
+  background: #1e3a8a;
+  color: white;
+  padding: 15px;
+  text-align: center;
 }
 
-/* ===== IA ===== */
-.chat{
-  max-width:700px;
-  margin:auto;
+.tabs {
+  display: flex;
+  background: #e5e7eb;
 }
-.chat-box{
-  background:white;
-  padding:15px;
-  height:300px;
-  overflow-y:auto;
-  border-radius:10px;
-}
-.msg{margin-bottom:8px;}
-.user{color:#0b3c5d;font-weight:bold;}
-.ia{color:#1f6fa8;}
 
-/* ===== OTROS ===== */
-.timer{font-size:48px;text-align:center;}
-textarea{width:100%;height:220px;}
-input[type=text]{width:80%;padding:8px;}
+.tabs button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  background: #e5e7eb;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.tabs button:hover {
+  background: #c7d2fe;
+}
+
+.tab {
+  display: none;
+  padding: 20px;
+}
+
+.tab.activa {
+  display: block;
+}
+
+.year {
+  margin-bottom: 25px;
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.materia {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0;
+}
+
+input[type="number"] {
+  width: 60px;
+}
+
+.chat {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.msg.user {
+  color: #1e3a8a;
+  margin-bottom: 5px;
+}
+
+.msg.ia {
+  color: #065f46;
+  margin-bottom: 10px;
+}
+
+textarea {
+  width: 100%;
+  height: 80px;
+}
 </style>
 </head>
 
 <body>
 
 <header>
-<h1>Medicina FMED – Organizador</h1>
+  <h1>Medicina FMED – Planner</h1>
 </header>
 
-<nav>
-<button onclick="mostrar('malla')">📘 Malla</button>
-<button onclick="mostrar('calendario')">📅 Calendario</button>
-<button onclick="mostrar('ia')">🤖 IA</button>
-<button onclick="mostrar('pomodoro')">⏱ Pomodoro</button>
-<button onclick="mostrar('horario')">📝 Horario</button>
-</nav>
-
-<!-- ================= MALLA ================= -->
-<section id="malla" class="activa">
-<div class="malla">
-
-<div class="anio"><h3>CBC</h3>
-<div class="materia" data-id="cbc-bio">Biología</div>
-<div class="materia" data-id="cbc-qui">Química</div>
-<div class="materia" data-id="cbc-fis">Física</div>
-<div class="materia" data-id="cbc-mat">Matemática</div>
-<div class="materia" data-id="cbc-pc">Pensamiento Científico</div>
-<div class="materia" data-id="cbc-se">Sociedad y Estado</div>
+<div class="tabs">
+  <button onclick="mostrarTab('malla')">Malla</button>
+  <button onclick="mostrarTab('glosario')">Glosario</button>
+  <button onclick="mostrarTab('calendario')">Calendario</button>
 </div>
 
-<div class="anio"><h3>1° Año</h3>
-<div class="materia" data-id="anat">Anatomía</div>
-<div class="materia" data-id="histo">Histología</div>
-<div class="materia" data-id="biocel">Biología Celular</div>
-<div class="materia" data-id="embrio">Embriología</div>
+<!-- MALLA -->
+<div id="malla" class="tab">
+  <h2>Malla de la carrera</h2>
+
+  <div class="year"><h3>CBC</h3>
+    <div class="materia"><input type="checkbox" onchange="guardar()">Biología <input type="number" placeholder="nota"></div>
+    <div class="materia"><input type="checkbox" onchange="guardar()">Química <input type="number"></div>
+    <div class="materia"><input type="checkbox" onchange="guardar()">Física <input type="number"></div>
+    <div class="materia"><input type="checkbox" onchange="guardar()">Matemática <input type="number"></div>
+  </div>
+
+  <div class="year"><h3>1.º Año</h3>
+    <div class="materia"><input type="checkbox" onchange="guardar()">Anatomía <input type="number"></div>
+    <div class="materia"><input type="checkbox" onchange="guardar()">Histología + Embriología <input type="number"></div>
+    <div class="materia"><input type="checkbox" onchange="guardar()">Fisiología <input type="number"></div>
+  </div>
+
+  <div class="year"><h3>2.º Año</h3>
+    <div class="materia"><input type="checkbox" onchange="guardar()">Bioquímica <input type="number"></div>
+    <div class="materia"><input type="checkbox" onchange="guardar()">Microbiología <input type="number"></div>
+    <div class="materia"><input type="checkbox" onchange="guardar()">Inmunología <input type="number"></div>
+  </div>
+
+  <div class="year"><h3>3.º Año</h3>
+    <div class="materia"><input type="checkbox" onchange="guardar()">Patología <input type="number"></div>
+    <div class="materia"><input type="checkbox" onchange="guardar()">Farmacología <input type="number"></div>
+    <div class="materia"><input type="checkbox" onchange="guardar()">Semiología <input type="number"></div>
+    <div class="materia"><input type="checkbox" onchange="guardar()">Salud Mental <input type="number"></div>
+  </div>
+
+  <div class="year"><h3>4.º Año</h3>
+    <div class="materia"><input type="checkbox" onchange="guardar()">Clínica Médica <input type="number"></div>
+    <div class="materia"><input type="checkbox" onchange="guardar()">Cirugía <input type="number"></div>
+    <div class="materia"><input type="checkbox" onchange="guardar()">Pediatría <input type="number"></div>
+    <div class="materia"><input type="checkbox" onchange="guardar()">Tocoginecología <input type="number"></div>
+  </div>
+
+  <div class="year"><h3>5.º Año</h3>
+    <div class="materia"><input type="checkbox" onchange="guardar()">Especialidades <input type="number"></div>
+    <div class="materia"><input type="checkbox" onchange="guardar()">Salud Pública <input type="number"></div>
+    <div class="materia"><input type="checkbox" onchange="guardar()">Bioética <input type="number"></div>
+    <div class="materia"><input type="checkbox" onchange="guardar()">Inglés Técnico <input type="number"></div>
+  </div>
+
+  <div class="year"><h3>6.º Año</h3>
+    <div class="materia"><input type="checkbox" onchange="guardar()">Práctica Final Obligatoria <input type="number"></div>
+  </div>
 </div>
 
-<div class="anio"><h3>2° Año</h3>
-<div class="materia" data-id="fisio">Fisiología</div>
-<div class="materia" data-id="bioq">Bioquímica</div>
-<div class="materia" data-id="micro">Microbiología</div>
+<!-- GLOSARIO -->
+<div id="glosario" class="tab">
+  <h2>Glosario Médico</h2>
+  <input id="pregunta" placeholder="Ej: ¿qué es la hematopoyesis?">
+  <button onclick="responder()">Buscar</button>
+
+  <div class="chat" id="chat"></div>
 </div>
 
-<div class="anio"><h3>3° Año</h3>
-<div class="materia" data-id="pat">Patología</div>
-<div class="materia" data-id="farm">Farmacología</div>
-<div class="materia" data-id="meda">Medicina A</div>
+<!-- CALENDARIO -->
+<div id="calendario" class="tab">
+  <h2>Calendario / Notas</h2>
+  <textarea id="calText" placeholder="Clases, parciales, finales..."></textarea>
+  <button onclick="guardarCalendario()">Guardar</button>
 </div>
-
-<div class="anio"><h3>4° Año</h3>
-<div class="materia" data-id="medb">Medicina B</div>
-<div class="materia" data-id="cir">Cirugía</div>
-<div class="materia" data-id="pedi">Pediatría</div>
-</div>
-
-<div class="anio"><h3>5° Año</h3>
-<div class="materia" data-id="gine">Ginecología</div>
-<div class="materia" data-id="psiq">Psiquiatría</div>
-<div class="materia" data-id="legal">Medicina Legal</div>
-</div>
-
-<div class="anio"><h3>6° Año</h3>
-<div class="materia" data-id="pfo">Práctica Final Obligatoria</div>
-</div>
-
-</div>
-</section>
-
-<!-- ================= CALENDARIO ================= -->
-<section id="calendario">
-<h2>Calendario de cursada</h2>
-<div id="calendar"></div>
-</section>
-
-<!-- ================= IA ================= -->
-<section id="ia">
-<h2>Asistente de Medicina</h2>
-<div class="chat">
-<div class="chat-box" id="chat"></div>
-<input type="text" id="pregunta" placeholder="Ej: ¿Cómo estudiar fisiología?">
-<button onclick="responder()">Enviar</button>
-</div>
-</section>
-
-<!-- ================= POMODORO ================= -->
-<section id="pomodoro">
-<h2>Pomodoro</h2>
-<div class="timer" id="timer">25:00</div>
-<button onclick="start()">Iniciar</button>
-<button onclick="reset()">Reset</button>
-</section>
-
-<!-- ================= HORARIO ================= -->
-<section id="horario">
-<h2>Mi horario</h2>
-<textarea id="horario"></textarea><br>
-<button onclick="guardarHorario()">Guardar</button>
-</section>
-
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.js"></script>
 
 <script>
-/* ===== TABS ===== */
-function mostrar(id){
-  document.querySelectorAll("section").forEach(s=>s.classList.remove("activa"));
-  document.getElementById(id).classList.add("activa");
+function mostrarTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('activa'));
+  document.getElementById(id).classList.add('activa');
 }
 
-/* ===== MALLA + NOTAS ===== */
-document.querySelectorAll(".materia").forEach(m=>{
-  const id=m.dataset.id;
-  const data=JSON.parse(localStorage.getItem(id)||"{}");
-  if(data.aprobada){
-    m.classList.add("aprobada");
-    if(data.nota) m.innerHTML+=`<small>Nota: ${data.nota}</small>`;
-  }
-  m.onclick=()=>{
-    const nota=prompt("Nota final (1–10):");
-    if(!nota) return;
-    localStorage.setItem(id,JSON.stringify({aprobada:true,nota}));
-    location.reload();
-  }
-});
+window.onload = () => {
+  mostrarTab('malla');
+  cargar();
+  document.getElementById("calText").value = localStorage.getItem("cal") || "";
+};
 
-/* ===== IA ===== */
-function responder(){
-  const q=pregunta.value.toLowerCase();
-  chat.innerHTML+=`<div class="msg user">Vos: ${pregunta.value}</div>`;
-  let r="Decime la materia y qué te preocupa.";
-
-  if(q.includes("anatom")) r="Anatomía se lleva con constancia diaria y atlas.";
-  else if(q.includes("fisiolog")) r="Fisiología es razonamiento. Entendé mecanismos.";
-  else if(q.includes("bioqu")) r="Bioquímica mejora mucho con esquemas.";
-  else if(q.includes("difícil")||q.includes("dificil")) r="Las más duras suelen ser Anatomía, Fisio y Bioquímica.";
-
-  chat.innerHTML+=`<div class="msg ia">IA: ${r}</div>`;
-  chat.scrollTop=chat.scrollHeight;
-  pregunta.value="";
-}
-
-/* ===== POMODORO ===== */
-let t=1500,i;
-function start(){
-  clearInterval(i);
-  i=setInterval(()=>{
-    t--;
-    timer.innerText=Math.floor(t/60)+":"+String(t%60).padStart(2,"0");
-    if(t<=0)clearInterval(i);
-  },1000);
-}
-function reset(){clearInterval(i);t=1500;timer.innerText="25:00";}
-
-/* ===== HORARIO ===== */
-horario.value=localStorage.getItem("horario")||"";
-function guardarHorario(){localStorage.setItem("horario",horario.value);}
-
-/* ===== CALENDARIO ===== */
-document.addEventListener('DOMContentLoaded',()=>{
-  const calendarEl=document.getElementById('calendar');
-  const eventos=JSON.parse(localStorage.getItem("eventosFMED")||"[]");
-
-  const calendar=new FullCalendar.Calendar(calendarEl,{
-    initialView:'timeGridWeek',
-    locale:'es',
-    slotMinTime:"08:00:00",
-    slotMaxTime:"22:00:00",
-    selectable:true,
-    editable:true,
-    events:eventos,
-    select(info){
-      const t=prompt("Materia / actividad:");
-      if(t){
-        calendar.addEvent({title:t,start:info.start,end:info.end});
-        guardar();
-      }
-      calendar.unselect();
-    },
-    eventClick(info){
-      if(confirm("¿Eliminar evento?")){
-        info.event.remove();
-        guardar();
-      }
-    },
-    eventChange:guardar
+function guardar() {
+  const data = [];
+  document.querySelectorAll('.materia').forEach(m => {
+    data.push({
+      ok: m.querySelector('input[type="checkbox"]').checked,
+      nota: m.querySelector('input[type="number"]').value
+    });
   });
-  calendar.render();
-
-  function guardar(){
-    const ev=calendar.getEvents().map(e=>({
-      title:e.title,start:e.start,end:e.end
-    }));
+  localStorage.setIt
