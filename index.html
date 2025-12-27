@@ -2,43 +2,66 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Malla Medicina – FMED UBA</title>
+<title>Medicina FMED – Organizador</title>
 
 <style>
 body{
-  font-family:Segoe UI, sans-serif;
+  margin:0;
+  font-family:"Segoe UI",sans-serif;
   background:#f2f7fc;
-  padding:20px;
 }
-h1{
+header{
+  background:#0b3c5d;
+  color:white;
+  padding:15px;
   text-align:center;
-  color:#0b3c5d;
-  margin-bottom:35px;
 }
-.ciclo{margin-bottom:45px;}
-.ciclo h2{
+nav{
+  display:flex;
+  justify-content:center;
+  background:#1f6fa8;
+  flex-wrap:wrap;
+}
+nav button{
+  background:none;
+  border:none;
+  color:white;
+  padding:12px 18px;
+  cursor:pointer;
+}
+nav button:hover{background:#155a8a;}
+section{display:none;padding:20px;}
+section.activa{display:block}
+
+/* ===== MALLA ===== */
+.malla{
+  display:flex;
+  gap:20px;
+  overflow-x:auto;
+}
+.anio{
+  min-width:220px;
+  background:#fff;
+  padding:10px;
+  border-radius:12px;
+  box-shadow:0 2px 5px rgba(0,0,0,.08);
+}
+.anio h3{
+  text-align:center;
   color:#1f6fa8;
-  margin-bottom:15px;
-}
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
-  gap:14px;
 }
 .materia{
   background:#cfe8ff;
   border:2px solid #5fa8e6;
   border-radius:10px;
-  padding:12px;
+  padding:10px;
   text-align:center;
+  margin-bottom:8px;
   cursor:pointer;
-  transition:.3s;
 }
-.materia:hover{transform:scale(1.03);}
 .materia.aprobada{
   background:#9ad0a3;
   border-color:#4fa36a;
-  color:#114422;
 }
 .materia.bloqueada{
   background:#e0e0e0;
@@ -46,162 +69,179 @@ h1{
   color:#777;
   cursor:not-allowed;
 }
-.footer{
-  text-align:center;
-  margin-top:40px;
-  font-size:14px;
-  color:#555;
+
+/* ===== IA ===== */
+.chat{
+  max-width:700px;
+  margin:auto;
 }
+.chat-box{
+  background:white;
+  padding:15px;
+  height:300px;
+  overflow-y:auto;
+  border-radius:10px;
+  margin-bottom:10px;
+}
+.msg{
+  margin-bottom:10px;
+}
+.user{font-weight:bold;color:#0b3c5d;}
+.ia{color:#1f6fa8;}
+input[type=text]{
+  width:80%;
+  padding:10px;
+}
+button.enviar{
+  padding:10px;
+}
+
+/* ===== POMODORO ===== */
+.timer{
+  font-size:48px;
+  text-align:center;
+  margin:20px 0;
+}
+textarea{width:100%;height:220px;}
+input{padding:8px;margin:5px;}
 </style>
 </head>
 
 <body>
 
-<h1>Malla Curricular – Medicina (FMED UBA)</h1>
+<header>
+<h1>Medicina FMED – Organizador</h1>
+</header>
 
-<!-- CBC -->
-<div class="ciclo">
-<h2>CBC</h2>
-<div class="grid">
-<div class="materia" data-id="cbcBio" onclick="aprobar(this)">Biología</div>
-<div class="materia" data-id="cbcQui" onclick="aprobar(this)">Química</div>
-<div class="materia" data-id="cbcFis" onclick="aprobar(this)">Física</div>
-<div class="materia" data-id="cbcMat" onclick="aprobar(this)">Matemática</div>
-<div class="materia" data-id="cbcPC" onclick="aprobar(this)">Pensamiento Científico</div>
-<div class="materia" data-id="cbcSE" onclick="aprobar(this)">Sociedad y Estado</div>
-</div>
+<nav>
+<button onclick="mostrar('malla')">📘 Malla</button>
+<button onclick="mostrar('pomodoro')">⏱ Pomodoro</button>
+<button onclick="mostrar('horario')">📅 Mi horario</button>
+<button onclick="mostrar('notas')">🧮 Notas</button>
+<button onclick="mostrar('ia')">🤖 IA Medicina</button>
+</nav>
+
+<!-- ================= MALLA ================= -->
+<section id="malla" class="activa">
+<div class="malla">
+
+<div class="anio">
+<h3>CBC</h3>
+<div class="materia" data-id="cbcBio">Biología</div>
+<div class="materia" data-id="cbcQui">Química</div>
+<div class="materia" data-id="cbcFis">Física</div>
+<div class="materia" data-id="cbcMat">Matemática</div>
+<div class="materia" data-id="cbcPC">Pensamiento Científico</div>
+<div class="materia" data-id="cbcSE">Sociedad y Estado</div>
 </div>
 
-<!-- 1° AÑO -->
-<div class="ciclo">
-<h2>1° Año – Ciclo Biomédico</h2>
-<div class="grid">
+<div class="anio">
+<h3>1° Año</h3>
 <div class="materia bloqueada" data-id="anat">Anatomía</div>
 <div class="materia bloqueada" data-id="histo">Histología</div>
 <div class="materia bloqueada" data-id="bioCel">Biología Celular</div>
-<div class="materia bloqueada" data-id="embrio">Embriología</div>
-<div class="materia bloqueada" data-id="gen">Genética</div>
-<div class="materia bloqueada" data-id="salud1">Salud Mental I</div>
-<div class="materia bloqueada" data-id="bioet1">Bioética I</div>
-</div>
 </div>
 
-<!-- 2° AÑO -->
-<div class="ciclo">
-<h2>2° Año – Ciclo Biomédico</h2>
-<div class="grid">
+<div class="anio">
+<h3>2° Año</h3>
 <div class="materia bloqueada" data-id="fisio">Fisiología</div>
 <div class="materia bloqueada" data-id="bioq">Bioquímica</div>
-<div class="materia bloqueada" data-id="inmu">Inmunología</div>
-<div class="materia bloqueada" data-id="micro">Microbiología</div>
-<div class="materia bloqueada" data-id="salud2">Salud Mental II</div>
-</div>
 </div>
 
-<!-- 3° AÑO -->
-<div class="ciclo">
-<h2>3° Año – Ciclo Clínico</h2>
-<div class="grid">
-<div class="materia bloqueada" data-id="pat">Patología</div>
-<div class="materia bloqueada" data-id="farm">Farmacología</div>
-<div class="materia bloqueada" data-id="medA">Medicina A</div>
-<div class="materia bloqueada" data-id="epi">Epidemiología</div>
 </div>
-</div>
+</section>
 
-<!-- 4° AÑO -->
-<div class="ciclo">
-<h2>4° Año – Ciclo Clínico</h2>
-<div class="grid">
-<div class="materia bloqueada" data-id="medB">Medicina B</div>
-<div class="materia bloqueada" data-id="cir">Cirugía</div>
-<div class="materia bloqueada" data-id="pedi">Pediatría</div>
-<div class="materia bloqueada" data-id="gine">Ginecología</div>
+<!-- ================= IA ================= -->
+<section id="ia">
+<h2>🤖 Asistente de Medicina FMED</h2>
+<div class="chat">
+  <div class="chat-box" id="chat"></div>
+  <input type="text" id="pregunta" placeholder="Preguntame algo sobre la carrera...">
+  <button class="enviar" onclick="responder()">Enviar</button>
 </div>
-</div>
+</section>
 
-<!-- 5° AÑO -->
-<div class="ciclo">
-<h2>5° Año – Ciclo Clínico</h2>
-<div class="grid">
-<div class="materia bloqueada" data-id="psiq">Psiquiatría</div>
-<div class="materia bloqueada" data-id="legal">Medicina Legal</div>
-<div class="materia bloqueada" data-id="fam">Medicina Familiar</div>
-<div class="materia bloqueada" data-id="saludPub">Salud Pública</div>
-</div>
-</div>
+<!-- ================= POMODORO ================= -->
+<section id="pomodoro">
+<h2>Pomodoro</h2>
+<div class="timer" id="timer">25:00</div>
+<button onclick="iniciarPomodoro()">Iniciar</button>
+<button onclick="resetPomodoro()">Reset</button>
+</section>
 
-<!-- 6° AÑO -->
-<div class="ciclo">
-<h2>6° Año – Práctica Final Obligatoria</h2>
-<div class="grid">
-<div class="materia bloqueada" data-id="pfo1">Clínica Médica</div>
-<div class="materia bloqueada" data-id="pfo2">Clínica Quirúrgica</div>
-<div class="materia bloqueada" data-id="pfo3">Atención Primaria</div>
-</div>
-</div>
+<!-- ================= HORARIO ================= -->
+<section id="horario">
+<h2>Mi horario</h2>
+<textarea id="horarioTexto"></textarea><br><br>
+<button onclick="guardarHorario()">Guardar</button>
+</section>
 
-<div class="footer">
-Tocá una materia para marcarla como aprobada 💙  
-Las correlativas se desbloquean solas.
-</div>
+<!-- ================= NOTAS ================= -->
+<section id="notas">
+<h2>Calculadora de notas</h2>
+<input type="number" id="n1" placeholder="Nota 1">
+<input type="number" id="n2" placeholder="Nota 2">
+<button onclick="calcular()">Calcular</button>
+<p id="resultado"></p>
+</section>
 
 <script>
-const correlativas = {
-anat:["cbcBio","cbcQui","cbcFis","cbcMat","cbcPC","cbcSE"],
-histo:["cbcBio","cbcQui"],
-bioCel:["cbcBio","cbcQui"],
-embrio:["histo"],
-gen:["histo"],
-salud1:["cbcPC","cbcSE"],
-bioet1:["cbcPC","cbcSE"],
-
-fisio:["anat","histo"],
-bioq:["anat","histo"],
-inmu:["bioq"],
-micro:["bioq"],
-salud2:["salud1"],
-
-pat:["fisio","bioq"],
-farm:["fisio"],
-medA:["pat"],
-epi:["pat"],
-
-medB:["medA"],
-cir:["pat"],
-pedi:["medA"],
-gine:["medA"],
-
-psiq:["salud2"],
-legal:["medB"],
-fam:["medB"],
-saludPub:["epi"],
-
-pfo1:["medB","cir"],
-pfo2:["cir"],
-pfo3:["fam"]
-};
-
-function aprobar(el){
-if(el.classList.contains("bloqueada"))return;
-el.classList.toggle("aprobada");
-verificar();
+/* ===== TABS ===== */
+function mostrar(id){
+  document.querySelectorAll("section").forEach(s=>s.classList.remove("activa"));
+  document.getElementById(id).classList.add("activa");
 }
 
-function verificar(){
-for(let id in correlativas){
-const mat=document.querySelector(`[data-id="${id}"]`);
-if(!mat)continue;
-const ok=correlativas[id].every(req=>
-document.querySelector(`[data-id="${req}"]`)?.classList.contains("aprobada")
-);
-if(ok){
-mat.classList.remove("bloqueada");
-mat.onclick=()=>aprobar(mat);
+/* ===== IA SIMPLE ===== */
+function responder(){
+  const q=pregunta.value.toLowerCase();
+  chat.innerHTML+=`<div class="msg user">Vos: ${pregunta.value}</div>`;
+  let r="Buena pregunta. Medicina es una carrera larga, exigente, pero hermosa.";
+
+  if(q.includes("anatom")){
+    r="Anatomía es una materia base. Mucha memoria, mucha constancia. Atlas + práctica, clave.";
+  }else if(q.includes("histolog")){
+    r="Histología requiere paciencia. Microscopio, imágenes y repaso frecuente.";
+  }else if(q.includes("organizar")){
+    r="En Medicina conviene estudiar todos los días un poco. No acumular. Dormir también es estudiar.";
+  }else if(q.includes("dificil")){
+    r="Las materias más pesadas suelen ser Anatomía, Fisiología y Bioquímica.";
+  }
+
+  chat.innerHTML+=`<div class="msg ia">IA: ${r}</div>`;
+  chat.scrollTop=chat.scrollHeight;
+  pregunta.value="";
 }
+
+/* ===== POMODORO ===== */
+let tiempo=1500, intervalo;
+function iniciarPomodoro(){
+  clearInterval(intervalo);
+  intervalo=setInterval(()=>{
+    tiempo--;
+    timer.innerText=
+      Math.floor(tiempo/60)+":"+(tiempo%60).toString().padStart(2,"0");
+    if(tiempo<=0)clearInterval(intervalo);
+  },1000);
 }
+function resetPomodoro(){
+  clearInterval(intervalo);
+  tiempo=1500;
+  timer.innerText="25:00";
+}
+
+/* ===== HORARIO ===== */
+horarioTexto.value=localStorage.getItem("horario")||"";
+function guardarHorario(){
+  localStorage.setItem("horario",horarioTexto.value);
+}
+
+/* ===== NOTAS ===== */
+function calcular(){
+  resultado.innerText="Promedio: "+((+n1.value + +n2.value)/2).toFixed(2);
 }
 </script>
 
 </body>
 </html>
+
