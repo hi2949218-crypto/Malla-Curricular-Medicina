@@ -103,7 +103,6 @@ input, textarea {
 
 <!-- ---------- MALLA ---------- -->
 <div id="malla" class="tab">
-
   <h2>CBC</h2>
   <div class="year">
     <label class="materia"><input type="checkbox"> Química</label>
@@ -113,164 +112,46 @@ input, textarea {
     <label class="materia"><input type="checkbox"> Sociedad y Estado</label>
     <label class="materia"><input type="checkbox"> Pensamiento Científico</label>
   </div>
-
-  <h2>1° Año</h2>
-  <div class="year">
-    <label class="materia"><input type="checkbox"> Anatomía</label>
-    <label class="materia"><input type="checkbox"> Histología</label>
-    <label class="materia"><input type="checkbox"> Embriología</label>
-    <label class="materia"><input type="checkbox"> Bioética</label>
-  </div>
-
-  <h2>2° Año</h2>
-  <div class="year">
-    <label class="materia"><input type="checkbox"> Fisiología</label>
-    <label class="materia"><input type="checkbox"> Bioquímica</label>
-    <label class="materia"><input type="checkbox"> Salud Mental</label>
-    <label class="materia"><input type="checkbox"> Inglés Técnico</label>
-  </div>
-
-  <h2>3° Año</h2>
-  <div class="year">
-    <label class="materia"><input type="checkbox"> Patología</label>
-    <label class="materia"><input type="checkbox"> Microbiología</label>
-    <label class="materia"><input type="checkbox"> Farmacología</label>
-  </div>
-
-  <h2>4° Año</h2>
-  <div class="year">
-    <label class="materia"><input type="checkbox"> Clínica Médica</label>
-    <label class="materia"><input type="checkbox"> Cirugía</label>
-  </div>
-
-  <h2>5° Año</h2>
-  <div class="year">
-    <label class="materia"><input type="checkbox"> Pediatría</label>
-    <label class="materia"><input type="checkbox"> Ginecología</label>
-  </div>
-
-  <h2>6° Año</h2>
-  <div class="year">
-    <label class="materia"><input type="checkbox"> Internado Rotatorio</label>
-    <label class="materia"><input type="checkbox"> Salud Pública</label>
-  </div>
-
   <div id="progreso">Progreso: 0%</div>
 </div>
 
 <!-- ---------- GLOSARIO ---------- -->
 <div id="glosario" class="tab">
-
   <h2>Glosario Médico</h2>
-
   <div class="card">
     <strong>Hematopoyesis</strong>
     <p>Proceso mediante el cual se forman las células sanguíneas a partir de células madre hematopoyéticas.</p>
   </div>
-
   <div class="card">
     <strong>Homeostasis</strong>
     <p>Mantenimiento del equilibrio interno del organismo frente a cambios externos.</p>
   </div>
-
-  <h3>Agregar concepto</h3>
-  <input id="concepto" placeholder="Concepto">
-  <textarea id="definicion" placeholder="Definición"></textarea>
-  <button onclick="agregarConcepto()">Agregar</button>
-
-  <div id="listaConceptos"></div>
 </div>
 
 <!-- ---------- CALENDARIO ---------- -->
 <div id="calendario" class="tab">
   <h2>Mi Calendario</h2>
-
   <div class="day">
     <strong>Lunes</strong>
     <textarea placeholder="Materias / tareas"></textarea>
-  </div>
-
-  <div class="day">
-    <strong>Martes</strong>
-    <textarea></textarea>
-  </div>
-
-  <div class="day">
-    <strong>Miércoles</strong>
-    <textarea></textarea>
-  </div>
-
-  <div class="day">
-    <strong>Jueves</strong>
-    <textarea></textarea>
-  </div>
-
-  <div class="day">
-    <strong>Viernes</strong>
-    <textarea></textarea>
   </div>
 </div>
 
 <!-- ---------- JS ---------- -->
 <script>
 function mostrarTab(id) {
+  // Ocultar todas las pestañas
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('activa'));
+  // Mostrar la pestaña seleccionada
   document.getElementById(id).classList.add('activa');
 }
 
-// ---------- PROGRESO ----------
-function actualizarProgreso() {
-  const checks = document.querySelectorAll('.materia input');
-  const total = checks.length;
-  const aprobadas = Array.from(checks).filter(c => c.checked).length;
-  const porcentaje = Math.round((aprobadas / total) * 100);
-  document.getElementById('progreso').textContent = `Progreso: ${porcentaje}%`;
-}
+// Al cargar la página, mostrar la pestaña "Malla"
+window.onload = () => {
+  mostrarTab('malla');
+};
+</script>
 
-// ---------- GUARDAR MATERIAS ----------
-function guardarMaterias() {
-  const materias = [];
-  document.querySelectorAll('.materia input').forEach(c => {
-    materias.push({nombre: c.parentNode.textContent.trim(), checked: c.checked});
-  });
-  localStorage.setItem('materias', JSON.stringify(materias));
-  actualizarProgreso();
-}
+</body>
+</html>
 
-function cargarMaterias() {
-  const materiasGuardadas = JSON.parse(localStorage.getItem('materias') || "[]");
-  materiasGuardadas.forEach(m => {
-    document.querySelectorAll('.materia').forEach(label => {
-      if (label.textContent.trim() === m.nombre) {
-        label.querySelector('input').checked = m.checked;
-      }
-    });
-  });
-  actualizarProgreso();
-}
-
-// ---------- GLOSARIO ----------
-function agregarConcepto() {
-  const c = concepto.value.trim();
-  const d = definicion.value.trim();
-  if (!c || !d) return;
-
-  const div = document.createElement('div');
-  div.className = 'card';
-  div.innerHTML = `<strong>${c}</strong><p>${d}</p>`;
-  listaConceptos.appendChild(div);
-
-  const conceptosGuardados = JSON.parse(localStorage.getItem('glosario') || "[]");
-  conceptosGuardados.push({concepto: c, definicion: d});
-  localStorage.setItem('glosario', JSON.stringify(conceptosGuardados));
-
-  concepto.value = '';
-  definicion.value = '';
-}
-
-function cargarGlosario() {
-  const conceptosGuardados = JSON.parse(localStorage.getItem('glosario') || "[]");
-  conceptosGuardados.forEach(c => {
-    const div = document.createElement('div');
-    div.className = 'card';
-    div.innerHTML = `<strong>${c.concepto}</strong><p>${c
