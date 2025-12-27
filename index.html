@@ -2,13 +2,16 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Medicina FMED – Organizador</title>
+<title>Medicina FMED – Organizador Completo</title>
+
+<!-- FullCalendar -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css" rel="stylesheet">
 
 <style>
 body{
   margin:0;
   font-family:Segoe UI, sans-serif;
-  background:#f3f7fb;
+  background:#f2f6fb;
 }
 header{
   background:#0b3c5d;
@@ -26,7 +29,7 @@ nav button{
   background:none;
   border:none;
   color:white;
-  padding:12px 18px;
+  padding:12px 16px;
   cursor:pointer;
 }
 nav button:hover{background:#155a8a;}
@@ -36,20 +39,19 @@ section.activa{display:block}
 /* ===== MALLA ===== */
 .malla{
   display:flex;
-  gap:20px;
+  gap:18px;
   overflow-x:auto;
 }
 .anio{
   min-width:240px;
   background:white;
-  padding:12px;
+  padding:14px;
   border-radius:14px;
   box-shadow:0 2px 6px rgba(0,0,0,.08);
 }
 .anio h3{
   text-align:center;
   color:#1f6fa8;
-  margin-bottom:10px;
 }
 .materia{
   background:#e3f1ff;
@@ -58,22 +60,24 @@ section.activa{display:block}
   padding:10px;
   margin-bottom:8px;
   cursor:pointer;
-  transition:.2s;
 }
-.materia:hover{transform:scale(1.02);}
 .materia.aprobada{
   background:#c9ead3;
   border-color:#5fb37c;
 }
 .materia small{
   display:block;
-  margin-top:4px;
   font-size:12px;
-  color:#333;
+  margin-top:4px;
 }
-.materia.bloqueada{
-  opacity:.4;
-  cursor:not-allowed;
+
+/* ===== CALENDARIO ===== */
+#calendar{
+  max-width:900px;
+  margin:auto;
+  background:white;
+  padding:15px;
+  border-radius:14px;
 }
 
 /* ===== IA ===== */
@@ -88,17 +92,14 @@ section.activa{display:block}
   overflow-y:auto;
   border-radius:10px;
 }
-.msg{margin-bottom:10px;}
-.user{font-weight:bold;color:#0b3c5d;}
+.msg{margin-bottom:8px;}
+.user{color:#0b3c5d;font-weight:bold;}
 .ia{color:#1f6fa8;}
-input[type=text]{
-  width:80%;
-  padding:10px;
-}
 
 /* ===== OTROS ===== */
 .timer{font-size:48px;text-align:center;}
 textarea{width:100%;height:220px;}
+input[type=text]{width:80%;padding:8px;}
 </style>
 </head>
 
@@ -110,74 +111,67 @@ textarea{width:100%;height:220px;}
 
 <nav>
 <button onclick="mostrar('malla')">📘 Malla</button>
+<button onclick="mostrar('calendario')">📅 Calendario</button>
 <button onclick="mostrar('ia')">🤖 IA</button>
 <button onclick="mostrar('pomodoro')">⏱ Pomodoro</button>
-<button onclick="mostrar('horario')">📅 Horario</button>
+<button onclick="mostrar('horario')">📝 Horario</button>
 </nav>
 
 <!-- ================= MALLA ================= -->
 <section id="malla" class="activa">
 <div class="malla">
 
-<!-- CBC -->
-<div class="anio">
-<h3>CBC</h3>
-<div class="materia" data-id="bio">Biología</div>
-<div class="materia" data-id="qui">Química</div>
-<div class="materia" data-id="fis">Física</div>
-<div class="materia" data-id="mat">Matemática</div>
-<div class="materia" data-id="pc">Pensamiento Científico</div>
-<div class="materia" data-id="se">Sociedad y Estado</div>
+<div class="anio"><h3>CBC</h3>
+<div class="materia" data-id="cbc-bio">Biología</div>
+<div class="materia" data-id="cbc-qui">Química</div>
+<div class="materia" data-id="cbc-fis">Física</div>
+<div class="materia" data-id="cbc-mat">Matemática</div>
+<div class="materia" data-id="cbc-pc">Pensamiento Científico</div>
+<div class="materia" data-id="cbc-se">Sociedad y Estado</div>
 </div>
 
-<!-- 1 -->
-<div class="anio">
-<h3>1° Año</h3>
+<div class="anio"><h3>1° Año</h3>
 <div class="materia" data-id="anat">Anatomía</div>
 <div class="materia" data-id="histo">Histología</div>
 <div class="materia" data-id="biocel">Biología Celular</div>
 <div class="materia" data-id="embrio">Embriología</div>
 </div>
 
-<!-- 2 -->
-<div class="anio">
-<h3>2° Año</h3>
+<div class="anio"><h3>2° Año</h3>
 <div class="materia" data-id="fisio">Fisiología</div>
 <div class="materia" data-id="bioq">Bioquímica</div>
 <div class="materia" data-id="micro">Microbiología</div>
 </div>
 
-<!-- 3 -->
-<div class="anio">
-<h3>3° Año</h3>
+<div class="anio"><h3>3° Año</h3>
 <div class="materia" data-id="pat">Patología</div>
 <div class="materia" data-id="farm">Farmacología</div>
 <div class="materia" data-id="meda">Medicina A</div>
 </div>
 
-<!-- 4 -->
-<div class="anio">
-<h3>4° Año</h3>
+<div class="anio"><h3>4° Año</h3>
 <div class="materia" data-id="medb">Medicina B</div>
 <div class="materia" data-id="cir">Cirugía</div>
 <div class="materia" data-id="pedi">Pediatría</div>
 </div>
 
-<!-- 5 -->
-<div class="anio">
-<h3>5° Año</h3>
+<div class="anio"><h3>5° Año</h3>
 <div class="materia" data-id="gine">Ginecología</div>
 <div class="materia" data-id="psiq">Psiquiatría</div>
 <div class="materia" data-id="legal">Medicina Legal</div>
 </div>
 
-<!-- 6 -->
-<div class="anio">
-<h3>6° Año</h3>
+<div class="anio"><h3>6° Año</h3>
 <div class="materia" data-id="pfo">Práctica Final Obligatoria</div>
 </div>
 
 </div>
+</section>
+
+<!-- ================= CALENDARIO ================= -->
+<section id="calendario">
+<h2>Calendario de cursada</h2>
+<div id="calendar"></div>
 </section>
 
 <!-- ================= IA ================= -->
@@ -185,7 +179,7 @@ textarea{width:100%;height:220px;}
 <h2>Asistente de Medicina</h2>
 <div class="chat">
 <div class="chat-box" id="chat"></div>
-<input type="text" id="pregunta" placeholder="Ej: ¿Cómo estudiar anatomía?">
+<input type="text" id="pregunta" placeholder="Ej: ¿Cómo estudiar fisiología?">
 <button onclick="responder()">Enviar</button>
 </div>
 </section>
@@ -205,6 +199,8 @@ textarea{width:100%;height:220px;}
 <button onclick="guardarHorario()">Guardar</button>
 </section>
 
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.js"></script>
+
 <script>
 /* ===== TABS ===== */
 function mostrar(id){
@@ -212,7 +208,7 @@ function mostrar(id){
   document.getElementById(id).classList.add("activa");
 }
 
-/* ===== NOTAS POR MATERIA ===== */
+/* ===== MALLA + NOTAS ===== */
 document.querySelectorAll(".materia").forEach(m=>{
   const id=m.dataset.id;
   const data=JSON.parse(localStorage.getItem(id)||"{}");
@@ -221,8 +217,8 @@ document.querySelectorAll(".materia").forEach(m=>{
     if(data.nota) m.innerHTML+=`<small>Nota: ${data.nota}</small>`;
   }
   m.onclick=()=>{
-    const nota=prompt("Nota final (1-10):");
-    if(!nota)return;
+    const nota=prompt("Nota final (1–10):");
+    if(!nota) return;
     localStorage.setItem(id,JSON.stringify({aprobada:true,nota}));
     location.reload();
   }
@@ -232,17 +228,12 @@ document.querySelectorAll(".materia").forEach(m=>{
 function responder(){
   const q=pregunta.value.toLowerCase();
   chat.innerHTML+=`<div class="msg user">Vos: ${pregunta.value}</div>`;
-  let r="Buena pregunta. Decime la materia y te ayudo.";
+  let r="Decime la materia y qué te preocupa.";
 
-  if(q.includes("anatom")){
-    r="Anatomía es pesada por volumen. Constancia diaria, atlas + práctica. No memorices sin entender.";
-  } else if(q.includes("fisiolog")){
-    r="Fisiología requiere razonamiento. Entender mecanismos antes de memorizar.";
-  } else if(q.includes("bioqu")){
-    r="Bioquímica se hace llevadera con esquemas. No intentes aprenderla de memoria cruda.";
-  } else if(q.includes("dificil")){
-    r="Las más exigentes suelen ser Anatomía, Fisiología y Bioquímica.";
-  }
+  if(q.includes("anatom")) r="Anatomía se lleva con constancia diaria y atlas.";
+  else if(q.includes("fisiolog")) r="Fisiología es razonamiento. Entendé mecanismos.";
+  else if(q.includes("bioqu")) r="Bioquímica mejora mucho con esquemas.";
+  else if(q.includes("difícil")||q.includes("dificil")) r="Las más duras suelen ser Anatomía, Fisio y Bioquímica.";
 
   chat.innerHTML+=`<div class="msg ia">IA: ${r}</div>`;
   chat.scrollTop=chat.scrollHeight;
@@ -263,10 +254,40 @@ function reset(){clearInterval(i);t=1500;timer.innerText="25:00";}
 
 /* ===== HORARIO ===== */
 horario.value=localStorage.getItem("horario")||"";
-function guardarHorario(){
-  localStorage.setItem("horario",horario.value);
-}
-</script>
+function guardarHorario(){localStorage.setItem("horario",horario.value);}
 
-</body>
-</html>
+/* ===== CALENDARIO ===== */
+document.addEventListener('DOMContentLoaded',()=>{
+  const calendarEl=document.getElementById('calendar');
+  const eventos=JSON.parse(localStorage.getItem("eventosFMED")||"[]");
+
+  const calendar=new FullCalendar.Calendar(calendarEl,{
+    initialView:'timeGridWeek',
+    locale:'es',
+    slotMinTime:"08:00:00",
+    slotMaxTime:"22:00:00",
+    selectable:true,
+    editable:true,
+    events:eventos,
+    select(info){
+      const t=prompt("Materia / actividad:");
+      if(t){
+        calendar.addEvent({title:t,start:info.start,end:info.end});
+        guardar();
+      }
+      calendar.unselect();
+    },
+    eventClick(info){
+      if(confirm("¿Eliminar evento?")){
+        info.event.remove();
+        guardar();
+      }
+    },
+    eventChange:guardar
+  });
+  calendar.render();
+
+  function guardar(){
+    const ev=calendar.getEvents().map(e=>({
+      title:e.title,start:e.start,end:e.end
+    }));
