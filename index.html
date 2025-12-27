@@ -1,86 +1,331 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Planner Medicina UBA</title>
-<style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f1f5f9;
-}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Planner Medicina UBA</title>
+  <style>
+    :root{
+      --blue-700: #1e40af;
+      --blue-600: #2563eb;
+      --bg: #f1f5f9;
+      --panel-bg: #ffffff;
+      --text: #0f172a;
+    }
 
-/* ---------- TABS ---------- */
-.tabs {
-  display: flex;
-  background: #1e40af;
-}
+    html,body{margin:0;padding:0;font-family:Arial, Helvetica, sans-serif;background:var(--bg);color:var(--text);}
 
-.tabs button {
-  flex: 1;
-  padding: 14px;
-  border: none;
-  background: #1e40af;
-  color: white;
-  cursor: pointer;
-  font-size: 14px;
-}
+    /* ---------- TABS ---------- */
+    .tabs {
+      display:flex;
+      gap:6px;
+      background:var(--blue-700);
+      padding:8px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
 
-.tabs button:hover {
-  background: #2563eb;
-}
+    .tabs [role="tab"]{
+      flex:1 1 auto;
+      padding:12px 16px;
+      border:0;
+      background:transparent;
+      color:#fff;
+      cursor:pointer;
+      font-size:15px;
+      text-align:center;
+      border-radius:8px;
+      transition: background .12s, transform .06s;
+    }
 
-/* ---------- CONTENIDO ---------- */
-.tab {
-  display: none;
-  padding: 20px;
-}
+    .tabs [role="tab"]:hover{ background:rgba(255,255,255,0.06); transform:translateY(-1px); }
+    .tabs [role="tab"]:focus{ outline:3px solid rgba(255,255,255,0.18); outline-offset:2px; }
 
-.tab.activa {
-  display: block;
-}
-</style>
+    /* estado activo */
+    .tabs [role="tab"][aria-selected="true"]{
+      background:var(--blue-600);
+      box-shadow: 0 2px 0 rgba(0,0,0,0.08) inset;
+      font-weight:600;
+    }
+
+    /* ---------- CONTENIDO ---------- */
+    .tab {
+      display:none;
+      padding:20px;
+      background:var(--panel-bg);
+      margin:16px;
+      border-radius:10px;
+      box-shadow: 0 8px 20px rgba(15,23,42,0.06);
+    }
+
+    .tab.activa { display:block; }
+
+    /* Tipografía y layout */
+    h2{ margin-top:0; color:#0b1220; }
+    p{ line-height:1.5; color:#334155; }
+
+    /* ===== Glosario / Asistente ===== */
+    .glosario-form {
+      display:flex;
+      gap:8px;
+      margin-bottom:12px;
+      flex-wrap:wrap;
+    }
+    .glosario-form input[type="search"]{
+      flex:1 1 320px;
+      padding:10px 12px;
+      border-radius:8px;
+      border:1px solid #cbd5e1;
+      font-size:15px;
+      background:#fff;
+    }
+    .glosario-form button {
+      padding:10px 14px;
+      border-radius:8px;
+      border:0;
+      background:var(--blue-600);
+      color:#fff;
+      cursor:pointer;
+      font-weight:600;
+    }
+    .sugerencias {
+      margin-bottom:10px;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .sugerencia {
+      background:#eef2ff;
+      color:#1e3a8a;
+      padding:6px 10px;
+      border-radius:999px;
+      cursor:pointer;
+      font-size:14px;
+      border:1px solid rgba(30,58,138,0.06);
+    }
+    .resultado {
+      background:#fff;
+      border:1px solid #e2e8f0;
+      padding:14px;
+      border-radius:8px;
+    }
+    .nota {
+      margin-top:8px;
+      font-size:13px;
+      color:#475569;
+    }
+
+    /* imagen resumen */
+    .resultado img { max-width:180px; float:right; margin-left:12px; border-radius:6px; }
+
+    /* Responsive */
+    @media (max-width:480px){
+      .tabs [role="tab"]{ font-size:14px; padding:10px; }
+      .tab{ margin:12px; padding:14px; }
+      .resultado img { float:none; display:block; margin:8px auto 12px; max-width:100%; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- ---------- PESTAÑAS ---------- -->
-<div class="tabs">
-  <button onclick="mostrarTab('malla')">Malla</button>
-  <button onclick="mostrarTab('glosario')">Glosario</button>
-  <button onclick="mostrarTab('calendario')">Calendario</button>
-</div>
+  <!-- ---------- PESTAÑAS ---------- -->
+  <nav class="tabs" role="tablist" aria-label="Navegación principal">
+    <button id="tab-malla" role="tab" aria-controls="malla" aria-selected="false" tabindex="0">Malla</button>
+    <button id="tab-glosario" role="tab" aria-controls="glosario" aria-selected="false" tabindex="-1">Asistente</button>
+    <button id="tab-calendario" role="tab" aria-controls="calendario" aria-selected="false" tabindex="-1">Calendario</button>
+  </nav>
 
-<!-- ---------- MALLA ---------- -->
-<div id="malla" class="tab">
-  <h2>Malla</h2>
-  <p>Contenido de la malla curricular...</p>
-</div>
+  <main>
+    <!-- ---------- MALLA ---------- -->
+    <section id="malla" class="tab" role="tabpanel" aria-labelledby="tab-malla" tabindex="0">
+      <h2>Malla</h2>
+      <p>Contenido de la malla curricular...</p>
+    </section>
 
-<!-- ---------- GLOSARIO ---------- -->
-<div id="glosario" class="tab">
-  <h2>Glosario</h2>
-  <p>Contenido del glosario...</p>
-</div>
+    <!-- ---------- GLOSARIO / ASISTENTE (WIKIPEDIA) ---------- -->
+    <section id="glosario" class="tab" role="tabpanel" aria-labelledby="tab-glosario" tabindex="0">
+      <h2>Asistente (búsqueda en Wikipedia)</h2>
 
-<!-- ---------- CALENDARIO ---------- -->
-<div id="calendario" class="tab">
-  <h2>Calendario</h2>
-  <p>Contenido del calendario...</p>
-</div>
+      <div class="glosario-form" role="search" aria-label="Buscar concepto">
+        <input id="buscarTermino" type="search" placeholder="Escribe un término o pregunta (ej. 'anatomía del corazón')" aria-label="Término a buscar">
+        <button id="btnBuscar" type="button">Buscar</button>
+      </div>
 
-<script>
-function mostrarTab(id) {
-  // Ocultar todas las pestañas
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('activa'));
-  // Mostrar la pestaña seleccionada
-  document.getElementById(id).classList.add('activa');
-}
+      <div id="sugerencias" class="sugerencias" aria-live="polite"></div>
 
-// Mostrar "Malla" al cargar la página
-window.onload = () => {
-  mostrarTab('malla');
-};
-</script>
+      <div id="resultado" class="resultado" aria-live="polite">
+        <p class="nota">Escribe un término y pulsa "Buscar". El asistente mostrará el resumen de la página de Wikipedia (si existe).</p>
+      </div>
 
+      <p class="nota">Nota: este asistente usa Wikipedia en español (API pública). Si quieres respuestas más conversacionales o generadas por un modelo (GPT), puedo integrarlo luego (normalmente requiere clave/API y puede tener coste).</p>
+    </section>
+
+    <!-- ---------- CALENDARIO ---------- -->
+    <section id="calendario" class="tab" role="tabpanel" aria-labelledby="tab-calendario" tabindex="0">
+      <h2>Calendario</h2>
+      <p>Contenido del calendario...</p>
+    </section>
+  </main>
+
+  <script>
+    (function(){
+      const tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+      const panels = Array.from(document.querySelectorAll('[role="tabpanel"]'));
+
+      function mostrarTab(id, updateHash = true){
+        panels.forEach(p => p.classList.remove('activa'));
+        tabs.forEach(t => {
+          t.setAttribute('aria-selected','false');
+          t.setAttribute('tabindex','-1');
+        });
+
+        const panel = document.getElementById(id);
+        const tab = tabs.find(t => t.getAttribute('aria-controls') === id);
+        if(panel && tab){
+          panel.classList.add('activa');
+          tab.setAttribute('aria-selected','true');
+          tab.setAttribute('tabindex','0');
+          tab.focus({preventScroll:true});
+          if(updateHash){
+            history.replaceState(null, '', '#' + id);
+          }
+        }
+      }
+
+      // keyboard navigation and activation
+      tabs.forEach(t => {
+        t.addEventListener('click', () => mostrarTab(t.getAttribute('aria-controls')));
+        t.addEventListener('keydown', (e) => {
+          const idx = tabs.indexOf(t);
+          let newIdx = null;
+          if(e.key === 'ArrowRight') newIdx = (idx + 1) % tabs.length;
+          else if(e.key === 'ArrowLeft') newIdx = (idx - 1 + tabs.length) % tabs.length;
+          else if(e.key === 'Home') newIdx = 0;
+          else if(e.key === 'End') newIdx = tabs.length - 1;
+
+          if(newIdx !== null){
+            e.preventDefault();
+            tabs[newIdx].focus();
+          }
+        });
+        t.addEventListener('keyup', (e) => {
+          if(e.key === 'Enter' || e.key === ' '){
+            mostrarTab(t.getAttribute('aria-controls'));
+          }
+        });
+      });
+
+      function initFromHash(){
+        const hash = location.hash.replace('#','');
+        const valid = panels.some(p => p.id === hash);
+        if(valid) mostrarTab(hash, false);
+        else mostrarTab('malla', false);
+      }
+      window.addEventListener('hashchange', () => {
+        const id = location.hash.replace('#','');
+        if(id) mostrarTab(id, false);
+      });
+
+      // === Código del asistente (Wikipedia) ===
+      const input = document.getElementById('buscarTermino');
+      const btn = document.getElementById('btnBuscar');
+      const sugerenciasEl = document.getElementById('sugerencias');
+      const resultadoEl = document.getElementById('resultado');
+
+      // Buscar sugerencias (opensearch) y mostrar chips
+      async function buscarSugerencias(q){
+        sugerenciasEl.innerHTML = '';
+        if(!q || q.trim().length < 2) return;
+        try{
+          const url = 'https://es.wikipedia.org/w/api.php?action=opensearch&format=json&limit=6&origin=*&search=' + encodeURIComponent(q);
+          const res = await fetch(url);
+          if(!res.ok) throw new Error('Error en búsqueda');
+          const data = await res.json();
+          const titulos = data[1] || [];
+          titulos.forEach(t => {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'sugerencia';
+            b.textContent = t;
+            b.addEventListener('click', () => getResumen(t));
+            sugerenciasEl.appendChild(b);
+          });
+        }catch(err){
+          // no mostrar error al usuario para no entorpecer UX; opcionalmente logear
+          console.warn('Sugerencias error:', err);
+        }
+      }
+
+      // Obtener resumen de la página (REST summary)
+      async function getResumen(title){
+        resultadoEl.innerHTML = '<p class="nota">Cargando...</p>';
+        try{
+          const url = 'https://es.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(title);
+          const res = await fetch(url);
+          if(res.status === 404){
+            resultadoEl.innerHTML = '<p class="nota">No se encontró el término en Wikipedia.</p>';
+            return;
+          }
+          if(!res.ok) throw new Error('Error al obtener resumen');
+          const data = await res.json();
+          const html = [];
+          html.push('<h3>' + escapeHtml(data.title || title) + '</h3>');
+          if(data.thumbnail && data.thumbnail.source){
+            html.push('<img src="' + escapeHtml(data.thumbnail.source) + '" alt="' + escapeHtml(data.title || '') + '">');
+          }
+          if(data.extract_html){
+            html.push('<div>' + data.extract_html + '</div>');
+          } else if(data.extract){
+            html.push('<p>' + escapeHtml(data.extract) + '</p>');
+          } else {
+            html.push('<p class="nota">No hay resumen disponible.</p>');
+          }
+          if(data.content_urls && data.content_urls.desktop && data.content_urls.desktop.page){
+            html.push('<p class="nota"><a href="' + escapeHtml(data.content_urls.desktop.page) + '" target="_blank" rel="noopener">Leer en Wikipedia</a></p>');
+          }
+          resultadoEl.innerHTML = html.join('');
+        }catch(err){
+          resultadoEl.innerHTML = '<p class="nota">Error al buscar. Intenta de nuevo.</p>';
+          console.error('getResumen error:', err);
+        }
+      }
+
+      // Escape sencillo de HTML para texto
+      function escapeHtml(str){
+        return String(str).replace(/[&<>"]/g, function(m){
+          return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[m];
+        });
+      }
+
+      // Eventos
+      btn.addEventListener('click', () => {
+        const q = input.value.trim();
+        if(!q) return;
+        buscarSugerencias(q).then(() => {
+          const first = sugerenciasEl.querySelector('.sugerencia');
+          if(first){
+            getResumen(first.textContent);
+          } else {
+            getResumen(q);
+          }
+        });
+      });
+
+      let timer = null;
+      input.addEventListener('input', () => {
+        clearTimeout(timer);
+        timer = setTimeout(() => buscarSugerencias(input.value.trim()), 350);
+      });
+
+      input.addEventListener('keyup', (e) => {
+        if(e.key === 'Enter'){
+          btn.click();
+        }
+      });
+
+      // Inicializar según hash (si existe)
+      initFromHash();
+    })();
+  </script>
 </body>
 </html>
