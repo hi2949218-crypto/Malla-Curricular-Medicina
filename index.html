@@ -2,40 +2,36 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Medicina FMED – Planner</title>
+<title>Planner Medicina UBA</title>
 
 <style>
 body {
-  font-family: Arial, sans-serif;
   margin: 0;
-  background: #f4f7fb;
+  font-family: Arial, sans-serif;
+  background: #f1f5f9;
 }
 
-header {
-  background: #1e3a8a;
-  color: white;
-  padding: 15px;
-  text-align: center;
-}
-
+/* ---------- TABS ---------- */
 .tabs {
   display: flex;
-  background: #e5e7eb;
+  background: #1e40af;
 }
 
 .tabs button {
   flex: 1;
-  padding: 12px;
+  padding: 14px;
   border: none;
-  background: #e5e7eb;
+  background: #1e40af;
+  color: white;
   cursor: pointer;
-  font-weight: bold;
+  font-size: 14px;
 }
 
 .tabs button:hover {
-  background: #c7d2fe;
+  background: #2563eb;
 }
 
+/* ---------- CONTENIDO ---------- */
 .tab {
   display: none;
   padding: 20px;
@@ -45,144 +41,185 @@ header {
   display: block;
 }
 
+/* ---------- MALLA ---------- */
 .year {
-  margin-bottom: 25px;
+  margin-bottom: 20px;
   background: white;
   padding: 15px;
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 .materia {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin: 8px 0;
+  margin: 6px 0;
 }
 
-input[type="number"] {
-  width: 60px;
+/* ---------- GLOSARIO ---------- */
+input, textarea {
+  width: 100%;
+  padding: 8px;
+  margin: 6px 0;
 }
 
-.chat {
+.card {
   background: white;
-  padding: 15px;
-  border-radius: 10px;
-  max-height: 300px;
-  overflow-y: auto;
-}
-
-.msg.user {
-  color: #1e3a8a;
-  margin-bottom: 5px;
-}
-
-.msg.ia {
-  color: #065f46;
+  padding: 12px;
+  border-radius: 8px;
   margin-bottom: 10px;
 }
 
-textarea {
-  width: 100%;
-  height: 80px;
+/* ---------- CALENDARIO ---------- */
+.day {
+  background: white;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 8px;
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <h1>Medicina FMED – Planner</h1>
-</header>
-
+<!-- ---------- PESTAÑAS ---------- -->
 <div class="tabs">
   <button onclick="mostrarTab('malla')">Malla</button>
   <button onclick="mostrarTab('glosario')">Glosario</button>
   <button onclick="mostrarTab('calendario')">Calendario</button>
 </div>
 
-<!-- MALLA -->
+<!-- ---------- MALLA ---------- -->
 <div id="malla" class="tab">
-  <h2>Malla de la carrera</h2>
 
-  <div class="year"><h3>CBC</h3>
-    <div class="materia"><input type="checkbox" onchange="guardar()">Biología <input type="number" placeholder="nota"></div>
-    <div class="materia"><input type="checkbox" onchange="guardar()">Química <input type="number"></div>
-    <div class="materia"><input type="checkbox" onchange="guardar()">Física <input type="number"></div>
-    <div class="materia"><input type="checkbox" onchange="guardar()">Matemática <input type="number"></div>
+  <h2>CBC</h2>
+  <div class="year">
+    <label class="materia"><input type="checkbox"> Química</label>
+    <label class="materia"><input type="checkbox"> Física</label>
+    <label class="materia"><input type="checkbox"> Biología Celular</label>
+    <label class="materia"><input type="checkbox"> Matemática</label>
+    <label class="materia"><input type="checkbox"> Sociedad y Estado</label>
+    <label class="materia"><input type="checkbox"> Pensamiento Científico</label>
   </div>
 
-  <div class="year"><h3>1.º Año</h3>
-    <div class="materia"><input type="checkbox" onchange="guardar()">Anatomía <input type="number"></div>
-    <div class="materia"><input type="checkbox" onchange="guardar()">Histología + Embriología <input type="number"></div>
-    <div class="materia"><input type="checkbox" onchange="guardar()">Fisiología <input type="number"></div>
+  <h2>1° Año</h2>
+  <div class="year">
+    <label class="materia"><input type="checkbox"> Anatomía</label>
+    <label class="materia"><input type="checkbox"> Histología</label>
+    <label class="materia"><input type="checkbox"> Embriología</label>
+    <label class="materia"><input type="checkbox"> Bioética</label>
   </div>
 
-  <div class="year"><h3>2.º Año</h3>
-    <div class="materia"><input type="checkbox" onchange="guardar()">Bioquímica <input type="number"></div>
-    <div class="materia"><input type="checkbox" onchange="guardar()">Microbiología <input type="number"></div>
-    <div class="materia"><input type="checkbox" onchange="guardar()">Inmunología <input type="number"></div>
+  <h2>2° Año</h2>
+  <div class="year">
+    <label class="materia"><input type="checkbox"> Fisiología</label>
+    <label class="materia"><input type="checkbox"> Bioquímica</label>
+    <label class="materia"><input type="checkbox"> Salud Mental</label>
+    <label class="materia"><input type="checkbox"> Inglés Técnico</label>
   </div>
 
-  <div class="year"><h3>3.º Año</h3>
-    <div class="materia"><input type="checkbox" onchange="guardar()">Patología <input type="number"></div>
-    <div class="materia"><input type="checkbox" onchange="guardar()">Farmacología <input type="number"></div>
-    <div class="materia"><input type="checkbox" onchange="guardar()">Semiología <input type="number"></div>
-    <div class="materia"><input type="checkbox" onchange="guardar()">Salud Mental <input type="number"></div>
+  <h2>3° Año</h2>
+  <div class="year">
+    <label class="materia"><input type="checkbox"> Patología</label>
+    <label class="materia"><input type="checkbox"> Microbiología</label>
+    <label class="materia"><input type="checkbox"> Farmacología</label>
   </div>
 
-  <div class="year"><h3>4.º Año</h3>
-    <div class="materia"><input type="checkbox" onchange="guardar()">Clínica Médica <input type="number"></div>
-    <div class="materia"><input type="checkbox" onchange="guardar()">Cirugía <input type="number"></div>
-    <div class="materia"><input type="checkbox" onchange="guardar()">Pediatría <input type="number"></div>
-    <div class="materia"><input type="checkbox" onchange="guardar()">Tocoginecología <input type="number"></div>
+  <h2>4° Año</h2>
+  <div class="year">
+    <label class="materia"><input type="checkbox"> Clínica Médica</label>
+    <label class="materia"><input type="checkbox"> Cirugía</label>
   </div>
 
-  <div class="year"><h3>5.º Año</h3>
-    <div class="materia"><input type="checkbox" onchange="guardar()">Especialidades <input type="number"></div>
-    <div class="materia"><input type="checkbox" onchange="guardar()">Salud Pública <input type="number"></div>
-    <div class="materia"><input type="checkbox" onchange="guardar()">Bioética <input type="number"></div>
-    <div class="materia"><input type="checkbox" onchange="guardar()">Inglés Técnico <input type="number"></div>
+  <h2>5° Año</h2>
+  <div class="year">
+    <label class="materia"><input type="checkbox"> Pediatría</label>
+    <label class="materia"><input type="checkbox"> Ginecología</label>
   </div>
 
-  <div class="year"><h3>6.º Año</h3>
-    <div class="materia"><input type="checkbox" onchange="guardar()">Práctica Final Obligatoria <input type="number"></div>
+  <h2>6° Año</h2>
+  <div class="year">
+    <label class="materia"><input type="checkbox"> Internado Rotatorio</label>
+    <label class="materia"><input type="checkbox"> Salud Pública</label>
   </div>
 </div>
 
-<!-- GLOSARIO -->
+<!-- ---------- GLOSARIO ---------- -->
 <div id="glosario" class="tab">
+
   <h2>Glosario Médico</h2>
-  <input id="pregunta" placeholder="Ej: ¿qué es la hematopoyesis?">
-  <button onclick="responder()">Buscar</button>
 
-  <div class="chat" id="chat"></div>
+  <div class="card">
+    <strong>Hematopoyesis</strong>
+    <p>Proceso mediante el cual se forman las células sanguíneas a partir de células madre hematopoyéticas.</p>
+  </div>
+
+  <div class="card">
+    <strong>Homeostasis</strong>
+    <p>Mantenimiento del equilibrio interno del organismo frente a cambios externos.</p>
+  </div>
+
+  <h3>Agregar concepto</h3>
+  <input id="concepto" placeholder="Concepto">
+  <textarea id="definicion" placeholder="Definición"></textarea>
+  <button onclick="agregarConcepto()">Agregar</button>
+
+  <div id="listaConceptos"></div>
 </div>
 
-<!-- CALENDARIO -->
+<!-- ---------- CALENDARIO ---------- -->
 <div id="calendario" class="tab">
-  <h2>Calendario / Notas</h2>
-  <textarea id="calText" placeholder="Clases, parciales, finales..."></textarea>
-  <button onclick="guardarCalendario()">Guardar</button>
+  <h2>Mi Calendario</h2>
+
+  <div class="day">
+    <strong>Lunes</strong>
+    <textarea placeholder="Materias / tareas"></textarea>
+  </div>
+
+  <div class="day">
+    <strong>Martes</strong>
+    <textarea></textarea>
+  </div>
+
+  <div class="day">
+    <strong>Miércoles</strong>
+    <textarea></textarea>
+  </div>
+
+  <div class="day">
+    <strong>Jueves</strong>
+    <textarea></textarea>
+  </div>
+
+  <div class="day">
+    <strong>Viernes</strong>
+    <textarea></textarea>
+  </div>
 </div>
 
+<!-- ---------- JS ---------- -->
 <script>
 function mostrarTab(id) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('activa'));
   document.getElementById(id).classList.add('activa');
 }
 
-window.onload = () => {
-  mostrarTab('malla');
-  cargar();
-  document.getElementById("calText").value = localStorage.getItem("cal") || "";
-};
+window.onload = () => mostrarTab('malla');
 
-function guardar() {
-  const data = [];
-  document.querySelectorAll('.materia').forEach(m => {
-    data.push({
-      ok: m.querySelector('input[type="checkbox"]').checked,
-      nota: m.querySelector('input[type="number"]').value
-    });
-  });
-  localStorage.setIt
+function agregarConcepto() {
+  const c = concepto.value.trim();
+  const d = definicion.value.trim();
+  if (!c || !d) return;
+
+  const div = document.createElement('div');
+  div.className = 'card';
+  div.innerHTML = `<strong>${c}</strong><p>${d}</p>`;
+  listaConceptos.appendChild(div);
+
+  concepto.value = '';
+  definicion.value = '';
+}
+</script>
+
+</body>
+</html>
+
