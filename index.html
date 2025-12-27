@@ -336,41 +336,57 @@
         if(materias.length===0){ const p=document.createElement('p');p.className='nota';p.textContent='No hay materias en este año.';list.appendChild(p); }
         else materias.forEach(m=>{
           const row=document.createElement('div');row.className='materia';
-          row.innerHTML = `<div class="name" title="${escapeHtml(m.name)}">${escapeHtml(m.name)}</div>
-            <input type="number" min="0" max="10" step="0.1" value="${m.p1??''}" data-id="${m.id}" data-field="p1" aria-label="P1 ${escapeHtml(m.name)}">
-            <input type="number" min="0" max="10" step="0.1" value="${m.p2??''}" data-id="${m.id}" data-field="p2" aria-label="P2 ${escapeHtml(m.name)}">
-            <div class="avg">${calcAvg(m.p1,m.p2)}</div>
-            <button class="ter" data-action="temario" data-id="${m.id}">Temario</button>
-            <button class="small" data-action="delete" data-id="${m.id}">Eliminar</button>`;
+          // build elements using DOM methods to avoid html-escaping issues
+          const nameDiv = document.createElement('div'); nameDiv.className='name'; nameDiv.title = m.name; nameDiv.textContent = m.name;
+          const inP1 = document.createElement('input'); inP1.type='number'; inP1.min=0; inP1.max=10; inP1.step=0.1; inP1.value = m.p1 ?? ''; inP1.dataset.id = m.id; inP1.dataset.field='p1';
+          const inP2 = document.createElement('input'); inP2.type='number'; inP2.min=0; inP2.max=10; inP2.step=0.1; inP2.value = m.p2 ?? ''; inP2.dataset.id = m.id; inP2.dataset.field='p2';
+          const avgDiv = document.createElement('div'); avgDiv.className='avg'; avgDiv.textContent = calcAvg(m.p1,m.p2);
+          const btnTem = document.createElement('button'); btnTem.className='ter'; btnTem.type='button'; btnTem.dataset.action='temario'; btnTem.dataset.id=m.id; btnTem.textContent='Temario';
+          const btnDel = document.createElement('button'); btnDel.className='small'; btnDel.type='button'; btnDel.dataset.action='delete'; btnDel.dataset.id=m.id; btnDel.textContent='Eliminar';
+          row.appendChild(nameDiv);
+          row.appendChild(inP1);
+          row.appendChild(inP2);
+          row.appendChild(avgDiv);
+          row.appendChild(btnTem);
+          row.appendChild(btnDel);
           list.appendChild(row);
         });
         mallaYearsEl.appendChild(box);
       });
 
-      // listeners for inputs
-      mallaYearsEl.querySelectorAll('input[type="number"]').forEach(inp=>{
-        inp.addEventListener('change',()=>{
-          const id=inp.dataset.id, field=inp.dataset.field, val = inp.value===''?null:Number(inp.value);
-          const mat = malla.materias.find(x=>x.id===id);
-          if(mat){ mat[field]=val; saveMalla(malla); renderMalla(); }
-        });
-      });
-      // delete
-      mallaYearsEl.querySelectorAll('button[data-action="delete"]').forEach(b=>{
-        b.addEventListener('click',()=>{
-          const id=b.dataset.id; if(!confirm('Eliminar materia?')) return;
-          malla.materias = malla.materias.filter(x=>x.id!==id); saveMalla(malla); renderMalla();
-        });
-      });
-      // temario
-      mallaYearsEl.querySelectorAll('button[data-action="temario"]').forEach(b=>{
-        b.addEventListener('click',()=> openTemario(b.dataset.id));
-      });
-
-      // refresh selects
+      // use event delegation for inputs/buttons to ensure dynamic elements always work
+      // inputs: handled below by adding change listeners to the container
+      // listeners delegated:
+      // (delegation implemented once below)
       refreshSubjectOptions();
       populateTechSubjectSelect();
     }
+
+    // delegated handlers (single attachment)
+    mallaYearsEl.addEventListener('change', (e) => {
+      const target = e.target;
+      if(target.tagName === 'INPUT' && target.type === 'number' && target.dataset && target.dataset.id){
+        const id = target.dataset.id, field = target.dataset.field;
+        const val = target.value === '' ? null : Number(target.value);
+        const mat = malla.materias.find(x => x.id === id);
+        if(mat){ mat[field] = val; saveMalla(malla); renderMalla(); }
+      }
+    });
+
+    mallaYearsEl.addEventListener('click', (e) => {
+      const button = e.target.closest('button[data-action]');
+      if(!button) return;
+      const action = button.dataset.action;
+      const id = button.dataset.id;
+      if(action === 'delete'){
+        if(!confirm('Eliminar materia?')) return;
+        malla.materias = malla.materias.filter(x => x.id !== id);
+        saveMalla(malla);
+        renderMalla();
+      } else if(action === 'temario'){
+        openTemario(id);
+      }
+    });
 
     btnAgregarMateria.addEventListener('click',()=>{
       const name = materiaNombre.value.trim(); const y = materiaYear.value; const year = y==='CBC'?'CBC':Number(y);
@@ -416,37 +432,49 @@
       mat.topics = mat.topics||[];
       mat.topics.forEach((t,i)=>{
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${i+1}</td>
-          <td><input data-i="${i}" class="tema-txt" style="width:100%;border:0;background:transparent" value="${escapeHtml(t)}"/></td>
-          <td class="checkbox-centered"><input type="checkbox" data-i="${i}" class="tema-resumen" ${mat.summary?.includes(t)?'checked':''}></td>
-          <td class="checkbox-centered"><input type="checkbox" data-i="${i}" class="tema-estudiado"></td>
-          <td class="checkbox-centered"><span class="repaso-dot" data-i="${i}"></span><span class="repaso-dot" data-i="${i}"></span><span class="repaso-dot" data-i="${i}"></span></td>`;
+        // index
+        const tdIndex = document.createElement('td'); tdIndex.textContent = (i+1);
+        // tema input
+        const tdTema = document.createElement('td'); const inputTema = document.createElement('input'); inputTema.className='tema-txt'; inputTema.style.width='100%'; inputTema.style.border='0'; inputTema.style.background='transparent'; inputTema.value = t;
+        inputTema.dataset.i = i;
+        tdTema.appendChild(inputTema);
+        // resumen checkbox
+        const tdRes = document.createElement('td'); tdRes.className='checkbox-centered'; const chkRes = document.createElement('input'); chkRes.type='checkbox'; chkRes.dataset.i = i; chkRes.className='tema-resumen';
+        tdRes.appendChild(chkRes);
+        // estudiado checkbox
+        const tdEst = document.createElement('td'); tdEst.className='checkbox-centered'; const chkEst = document.createElement('input'); chkEst.type='checkbox'; chkEst.dataset.i = i; chkEst.className='tema-estudiado';
+        tdEst.appendChild(chkEst);
+        // repaso dots
+        const tdRep = document.createElement('td'); tdRep.className='checkbox-centered';
+        for(let d=0; d<3; d++){
+          const dot = document.createElement('span'); dot.className='repaso-dot'; dot.dataset.i = i; dot.dataset.dot = d; tdRep.appendChild(dot);
+        }
+
+        tr.appendChild(tdIndex); tr.appendChild(tdTema); tr.appendChild(tdRes); tr.appendChild(tdEst); tr.appendChild(tdRep);
         temarioBody.appendChild(tr);
       });
 
-      // wire repaso dots
+      // wire repaso dots and text blur handlers
       temarioBody.querySelectorAll('.repaso-dot').forEach(dot=>{
-        dot.addEventListener('click',()=>{
+        dot.addEventListener('click', ()=>{
           const i = Number(dot.dataset.i);
           const mat = malla.materias.find(m=>m.id===activeTemarioId);
-          mat.topics = mat.topics || [];
           mat.repCount = mat.repCount || {};
-          mat.repCount[i] = (mat.repCount[i]||0) + 1;
+          mat.repCount[i] = (mat.repCount[i] || 0) + 1;
           if(mat.repCount[i] > 3) mat.repCount[i] = 0;
           saveMalla(malla);
           renderTemario(mat);
         });
       });
 
-      // reflect repCounts visually
-      temarioBody.querySelectorAll('tr').forEach((tr,idx)=>{
-        const dots = tr.querySelectorAll('.repaso-dot');
+      temarioBody.querySelectorAll('tr').forEach((tr, idx) => {
         const mat = malla.materias.find(m=>m.id===activeTemarioId);
         const count = (mat.repCount && mat.repCount[idx]) || 0;
-        dots.forEach((d,j)=>{ if(j < count) d.classList.add('done'); else d.classList.remove('done'); });
+        const dots = tr.querySelectorAll('.repaso-dot');
+        dots.forEach((d,j)=> { if(j < count) d.classList.add('done'); else d.classList.remove('done'); });
       });
 
-      // editable tema text save on blur
+      // blur save
       temarioBody.querySelectorAll('.tema-txt').forEach(inp=>{
         inp.addEventListener('blur', ()=>{
           const i = Number(inp.dataset.i);
@@ -479,21 +507,16 @@
       malla.materias.forEach(m=>{
         const el=document.createElement('div'); el.className='row';
         const avg = calcAvg(m.p1,m.p2);
-        const promoted = (m.final !== null && Number(m.final) >= Number(promoThreshold.value));
-        // compute required final to reach pass / promo
-        const targetPass = Number(passThreshold.value);
-        const targetPromo = Number(promoThreshold.value);
-        // If partials exist average of partials vs final weight unspecified; assume final replaces average if taken.
-        // We'll compute minimal final to reach passing overall as: finalNeeded = target - averagePartial, (simple model)
+        const avgDisplay = avg;
         const avgP = (m.p1===null&&m.p2===null)?null: ( ( (m.p1||0) + (m.p2||0) ) / ( (m.p1===null?0:1) + (m.p2===null?0:1) ) );
-        const neededToPass = avgP === null ? 'N/A' : Math.max(0, (targetPass - avgP)).toFixed(1);
-        const neededToPromo = avgP === null ? 'N/A' : Math.max(0, (targetPromo - avgP)).toFixed(1);
+        const neededToPass = avgP === null ? 'N/A' : Math.max(0, (Number(passThreshold.value) - avgP)).toFixed(1);
+        const neededToPromo = avgP === null ? 'N/A' : Math.max(0, (Number(promoThreshold.value) - avgP)).toFixed(1);
 
         el.innerHTML = `<div style="flex:1">${escapeHtml(m.name)}</div>
           <input type="number" min="0" max="10" step="0.1" value="${m.p1??''}" data-id="${m.id}" data-field="p1" style="width:88px" />
           <input type="number" min="0" max="10" step="0.1" value="${m.p2??''}" data-id="${m.id}" data-field="p2" style="width:88px" />
           <input type="number" min="0" max="10" step="0.1" value="${m.final??''}" data-id="${m.id}" data-field="final" style="width:88px" />
-          <div style="width:72px;text-align:center">${avg}</div>
+          <div style="width:72px;text-align:center">${avgDisplay}</div>
           <div style="width:120px;font-size:13px">${neededToPass==='N/A'?'N/A':'Necesita '+neededToPass+' (final)' }<br/>Promo: ${neededToPromo==='N/A'?'N/A':neededToPromo}</div>`;
         gradesList.appendChild(el);
       });
@@ -506,7 +529,6 @@
         const m = malla.materias.find(x=>x.id===id);
         if(m) m[f]=v;
       });
-      // After saving, decide promotion flags: simple rule: if final >= promoThreshold -> promoted true
       malla.materias.forEach(m=>{
         m.promoted = (m.final !== null && Number(m.final) >= Number(promoThreshold.value));
       });
@@ -604,7 +626,6 @@
       return r.json();
     }
     async function querySearch(q, limit=6){
-      // fallback: action=query&list=search, more robust if opensearch fails
       const url = 'https://es.wikipedia.org/w/api.php?action=query&list=search&srsearch='+encodeURIComponent(q)+'&srlimit='+limit+'&format=json&origin=*';
       const r = await fetch(url);
       if(!r.ok) throw new Error('Error query search');
@@ -624,14 +645,11 @@
         let data = await opensearch(q,6);
         let titles = data[1]||[];
         if(titles.length === 0){
-          // fallback to query search
           const qdata = await querySearch(q,6);
           titles = (qdata.query && qdata.query.search) ? qdata.query.search.map(s=>s.title) : [];
         }
         if(titles.length===0){ resultadoEl.innerHTML='<p class="nota">No se encontraron resultados. Prueba otra palabra clave.</p>'; return; }
-        // show suggestions
         titles.forEach(t=>{ const b=document.createElement('button'); b.className='sugerencia'; b.textContent=t; b.addEventListener('click',()=> loadSummary(t)); sugerenciasEl.appendChild(b); });
-        // load first summary automatically
         loadSummary(titles[0]);
       }catch(err){ resultadoEl.innerHTML='<p class="nota">Error al buscar.</p>'; console.error(err); }
     });
@@ -657,10 +675,8 @@
       appendUserMsg(q);
       appendAssistantMsg('Buscando información relevante en Wikipedia...');
       try{
-        // 1) if user asks explicitly for a materia name present in malla, prefer that
         const found = malla.materias.find(m => m.name.toLowerCase() === q.toLowerCase());
         if(found){
-          // return the temario + summary if present
           const parts = [];
           parts.push(`Materia: ${found.name}`);
           if(found.topics && found.topics.length) parts.push('Temas: ' + found.topics.join(', '));
@@ -669,7 +685,6 @@
           return;
         }
 
-        // 2) opensearch + summary combo with fallback to query search
         let op = await opensearch(q,4);
         let titles = op[1]||[];
         if(titles.length === 0){
