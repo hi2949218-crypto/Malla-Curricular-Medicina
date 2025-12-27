@@ -49,10 +49,23 @@ body {
   border-radius: 8px;
 }
 
+.year:nth-child(odd) {
+  background: #e0f2fe;
+}
+.year:nth-child(even) {
+  background: #fef9c3;
+}
+
 .materia {
   display: flex;
   align-items: center;
   margin: 6px 0;
+}
+
+/* ---------- PROGRESO ---------- */
+#progreso {
+  margin: 15px 0;
+  font-weight: bold;
 }
 
 /* ---------- GLOSARIO ---------- */
@@ -141,6 +154,8 @@ input, textarea {
     <label class="materia"><input type="checkbox"> Internado Rotatorio</label>
     <label class="materia"><input type="checkbox"> Salud Pública</label>
   </div>
+
+  <div id="progreso">Progreso: 0%</div>
 </div>
 
 <!-- ---------- GLOSARIO ---------- -->
@@ -150,76 +165,4 @@ input, textarea {
 
   <div class="card">
     <strong>Hematopoyesis</strong>
-    <p>Proceso mediante el cual se forman las células sanguíneas a partir de células madre hematopoyéticas.</p>
-  </div>
-
-  <div class="card">
-    <strong>Homeostasis</strong>
-    <p>Mantenimiento del equilibrio interno del organismo frente a cambios externos.</p>
-  </div>
-
-  <h3>Agregar concepto</h3>
-  <input id="concepto" placeholder="Concepto">
-  <textarea id="definicion" placeholder="Definición"></textarea>
-  <button onclick="agregarConcepto()">Agregar</button>
-
-  <div id="listaConceptos"></div>
-</div>
-
-<!-- ---------- CALENDARIO ---------- -->
-<div id="calendario" class="tab">
-  <h2>Mi Calendario</h2>
-
-  <div class="day">
-    <strong>Lunes</strong>
-    <textarea placeholder="Materias / tareas"></textarea>
-  </div>
-
-  <div class="day">
-    <strong>Martes</strong>
-    <textarea></textarea>
-  </div>
-
-  <div class="day">
-    <strong>Miércoles</strong>
-    <textarea></textarea>
-  </div>
-
-  <div class="day">
-    <strong>Jueves</strong>
-    <textarea></textarea>
-  </div>
-
-  <div class="day">
-    <strong>Viernes</strong>
-    <textarea></textarea>
-  </div>
-</div>
-
-<!-- ---------- JS ---------- -->
-<script>
-function mostrarTab(id) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('activa'));
-  document.getElementById(id).classList.add('activa');
-}
-
-window.onload = () => mostrarTab('malla');
-
-function agregarConcepto() {
-  const c = concepto.value.trim();
-  const d = definicion.value.trim();
-  if (!c || !d) return;
-
-  const div = document.createElement('div');
-  div.className = 'card';
-  div.innerHTML = `<strong>${c}</strong><p>${d}</p>`;
-  listaConceptos.appendChild(div);
-
-  concepto.value = '';
-  definicion.value = '';
-}
-</script>
-
-</body>
-</html>
-
+    <p>Proceso mediante el cual se forman las células sangu
