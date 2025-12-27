@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Malla Medicina – FMED UBA</title>
+
+<style>
+body{
+  font-family:Segoe UI, sans-serif;
+  background:#f2f7fc;
+  padding:20px;
+}
+h1{
+  text-align:center;
+  color:#0b3c5d;
+  margin-bottom:35px;
+}
+.ciclo{margin-bottom:45px;}
+.ciclo h2{
+  color:#1f6fa8;
+  margin-bottom:15px;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+  gap:14px;
+}
+.materia{
+  background:#cfe8ff;
+  border:2px solid #5fa8e6;
+  border-radius:10px;
+  padding:12px;
+  text-align:center;
+  cursor:pointer;
+  transition:.3s;
+}
+.materia:hover{transform:scale(1.03);}
+.materia.aprobada{
+  background:#9ad0a3;
+  border-color:#4fa36a;
+  color:#114422;
+}
+.materia.bloqueada{
+  background:#e0e0e0;
+  border-color:#b0b0b0;
+  color:#777;
+  cursor:not-allowed;
+}
+.footer{
+  text-align:center;
+  margin-top:40px;
+  font-size:14px;
+  color:#555;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Malla Curricular – Medicina (FMED UBA)</h1>
+
+<!-- CBC -->
+<div class="ciclo">
+<h2>CBC</h2>
+<div class="grid">
+<div class="materia" data-id="cbcBio" onclick="aprobar(this)">Biología</div>
+<div class="materia" data-id="cbcQui" onclick="aprobar(this)">Química</div>
+<div class="materia" data-id="cbcFis" onclick="aprobar(this)">Física</div>
+<div class="materia" data-id="cbcMat" onclick="aprobar(this)">Matemática</div>
+<div class="materia" data-id="cbcPC" onclick="aprobar(this)">Pensamiento Científico</div>
+<div class="materia" data-id="cbcSE" onclick="aprobar(this)">Sociedad y Estado</div>
+</div>
+</div>
+
+<!-- 1° AÑO -->
+<div class="ciclo">
+<h2>1° Año – Ciclo Biomédico</h2>
+<div class="grid">
+<div class="materia bloqueada" data-id="anat">Anatomía</div>
+<div class="materia bloqueada" data-id="histo">Histología</div>
+<div class="materia bloqueada" data-id="bioCel">Biología Celular</div>
+<div class="materia bloqueada" data-id="embrio">Embriología</div>
+<div class="materia bloqueada" data-id="gen">Genética</div>
+<div class="materia bloqueada" data-id="salud1">Salud Mental I</div>
+<div class="materia bloqueada" data-id="bioet1">Bioética I</div>
+</div>
+</div>
+
+<!-- 2° AÑO -->
+<div class="ciclo">
+<h2>2° Año – Ciclo Biomédico</h2>
+<div class="grid">
+<div class="materia bloqueada" data-id="fisio">Fisiología</div>
+<div class="materia bloqueada" data-id="bioq">Bioquímica</div>
+<div class="materia bloqueada" data-id="inmu">Inmunología</div>
+<div class="materia bloqueada" data-id="micro">Microbiología</div>
+<div class="materia bloqueada" data-id="salud2">Salud Mental II</div>
+</div>
+</div>
+
+<!-- 3° AÑO -->
+<div class="ciclo">
+<h2>3° Año – Ciclo Clínico</h2>
+<div class="grid">
+<div class="materia bloqueada" data-id="pat">Patología</div>
+<div class="materia bloqueada" data-id="farm">Farmacología</div>
+<div class="materia bloqueada" data-id="medA">Medicina A</div>
+<div class="materia bloqueada" data-id="epi">Epidemiología</div>
+</div>
+</div>
+
+<!-- 4° AÑO -->
+<div class="ciclo">
+<h2>4° Año – Ciclo Clínico</h2>
+<div class="grid">
+<div class="materia bloqueada" data-id="medB">Medicina B</div>
+<div class="materia bloqueada" data-id="cir">Cirugía</div>
+<div class="materia bloqueada" data-id="pedi">Pediatría</div>
+<div class="materia bloqueada" data-id="gine">Ginecología</div>
+</div>
+</div>
+
+<!-- 5° AÑO -->
+<div class="ciclo">
+<h2>5° Año – Ciclo Clínico</h2>
+<div class="grid">
+<div class="materia bloqueada" data-id="psiq">Psiquiatría</div>
+<div class="materia bloqueada" data-id="legal">Medicina Legal</div>
+<div class="materia bloqueada" data-id="fam">Medicina Familiar</div>
+<div class="materia bloqueada" data-id="saludPub">Salud Pública</div>
+</div>
+</div>
+
+<!-- 6° AÑO -->
+<div class="ciclo">
+<h2>6° Año – Práctica Final Obligatoria</h2>
+<div class="grid">
+<div class="materia bloqueada" data-id="pfo1">Clínica Médica</div>
+<div class="materia bloqueada" data-id="pfo2">Clínica Quirúrgica</div>
+<div class="materia bloqueada" data-id="pfo3">Atención Primaria</div>
+</div>
+</div>
+
+<div class="footer">
+Tocá una materia para marcarla como aprobada 💙  
+Las correlativas se desbloquean solas.
+</div>
+
+<script>
+const correlativas = {
+anat:["cbcBio","cbcQui","cbcFis","cbcMat","cbcPC","cbcSE"],
+histo:["cbcBio","cbcQui"],
+bioCel:["cbcBio","cbcQui"],
+embrio:["histo"],
+gen:["histo"],
+salud1:["cbcPC","cbcSE"],
+bioet1:["cbcPC","cbcSE"],
+
+fisio:["anat","histo"],
+bioq:["anat","histo"],
+inmu:["bioq"],
+micro:["bioq"],
+salud2:["salud1"],
+
+pat:["fisio","bioq"],
+farm:["fisio"],
+medA:["pat"],
+epi:["pat"],
+
+medB:["medA"],
+cir:["pat"],
+pedi:["medA"],
+gine:["medA"],
+
+psiq:["salud2"],
+legal:["medB"],
+fam:["medB"],
+saludPub:["epi"],
+
+pfo1:["medB","cir"],
+pfo2:["cir"],
+pfo3:["fam"]
+};
+
+function aprobar(el){
+if(el.classList.contains("bloqueada"))return;
+el.classList.toggle("aprobada");
+verificar();
+}
+
+function verificar(){
+for(let id in correlativas){
+const mat=document.querySelector(`[data-id="${id}"]`);
+if(!mat)continue;
+const ok=correlativas[id].every(req=>
+document.querySelector(`[data-id="${req}"]`)?.classList.contains("aprobada")
+);
+if(ok){
+mat.classList.remove("bloqueada");
+mat.onclick=()=>aprobar(mat);
+}
+}
+}
+</script>
+
+</body>
+</html>
