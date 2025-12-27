@@ -165,4 +165,112 @@ input, textarea {
 
   <div class="card">
     <strong>Hematopoyesis</strong>
-    <p>Proceso mediante el cual se forman las células sangu
+    <p>Proceso mediante el cual se forman las células sanguíneas a partir de células madre hematopoyéticas.</p>
+  </div>
+
+  <div class="card">
+    <strong>Homeostasis</strong>
+    <p>Mantenimiento del equilibrio interno del organismo frente a cambios externos.</p>
+  </div>
+
+  <h3>Agregar concepto</h3>
+  <input id="concepto" placeholder="Concepto">
+  <textarea id="definicion" placeholder="Definición"></textarea>
+  <button onclick="agregarConcepto()">Agregar</button>
+
+  <div id="listaConceptos"></div>
+</div>
+
+<!-- ---------- CALENDARIO ---------- -->
+<div id="calendario" class="tab">
+  <h2>Mi Calendario</h2>
+
+  <div class="day">
+    <strong>Lunes</strong>
+    <textarea placeholder="Materias / tareas"></textarea>
+  </div>
+
+  <div class="day">
+    <strong>Martes</strong>
+    <textarea></textarea>
+  </div>
+
+  <div class="day">
+    <strong>Miércoles</strong>
+    <textarea></textarea>
+  </div>
+
+  <div class="day">
+    <strong>Jueves</strong>
+    <textarea></textarea>
+  </div>
+
+  <div class="day">
+    <strong>Viernes</strong>
+    <textarea></textarea>
+  </div>
+</div>
+
+<!-- ---------- JS ---------- -->
+<script>
+function mostrarTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('activa'));
+  document.getElementById(id).classList.add('activa');
+}
+
+// ---------- PROGRESO ----------
+function actualizarProgreso() {
+  const checks = document.querySelectorAll('.materia input');
+  const total = checks.length;
+  const aprobadas = Array.from(checks).filter(c => c.checked).length;
+  const porcentaje = Math.round((aprobadas / total) * 100);
+  document.getElementById('progreso').textContent = `Progreso: ${porcentaje}%`;
+}
+
+// ---------- GUARDAR MATERIAS ----------
+function guardarMaterias() {
+  const materias = [];
+  document.querySelectorAll('.materia input').forEach(c => {
+    materias.push({nombre: c.parentNode.textContent.trim(), checked: c.checked});
+  });
+  localStorage.setItem('materias', JSON.stringify(materias));
+  actualizarProgreso();
+}
+
+function cargarMaterias() {
+  const materiasGuardadas = JSON.parse(localStorage.getItem('materias') || "[]");
+  materiasGuardadas.forEach(m => {
+    document.querySelectorAll('.materia').forEach(label => {
+      if (label.textContent.trim() === m.nombre) {
+        label.querySelector('input').checked = m.checked;
+      }
+    });
+  });
+  actualizarProgreso();
+}
+
+// ---------- GLOSARIO ----------
+function agregarConcepto() {
+  const c = concepto.value.trim();
+  const d = definicion.value.trim();
+  if (!c || !d) return;
+
+  const div = document.createElement('div');
+  div.className = 'card';
+  div.innerHTML = `<strong>${c}</strong><p>${d}</p>`;
+  listaConceptos.appendChild(div);
+
+  const conceptosGuardados = JSON.parse(localStorage.getItem('glosario') || "[]");
+  conceptosGuardados.push({concepto: c, definicion: d});
+  localStorage.setItem('glosario', JSON.stringify(conceptosGuardados));
+
+  concepto.value = '';
+  definicion.value = '';
+}
+
+function cargarGlosario() {
+  const conceptosGuardados = JSON.parse(localStorage.getItem('glosario') || "[]");
+  conceptosGuardados.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `<strong>${c.concepto}</strong><p>${c
